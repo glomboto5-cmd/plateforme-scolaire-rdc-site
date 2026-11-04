@@ -1,6 +1,6 @@
 {
-  "name": "Plateforme Scolaire RDC",
-  "short_name": "École RDC",
+  "name": "Glody School",
+  "short_name": "Glody School",
   "description": "Gestion scolaire pour les écoles de la RDC : élèves, cotations, bulletins, discipline, documents et communication.",
   "lang": "fr",
   "start_url": "./#demo",

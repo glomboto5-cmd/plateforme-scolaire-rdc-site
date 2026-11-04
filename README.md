@@ -1,4 +1,4 @@
-# Plateforme Scolaire RDC
+# Glody School
 
 Site en ligne : https://glomboto5-cmd.github.io/plateforme-scolaire-rdc-site/
 
