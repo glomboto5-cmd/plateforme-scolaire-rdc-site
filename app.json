@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Unichat +",
+    "slug": "unichat-plus",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": false,
+    "scheme": "unichatplus",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0E7C66"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.unichatplus.app"
+    },
+    "android": {
+      "package": "com.unichatplus.app",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0E7C66"
+      },
+      "permissions": ["CAMERA", "READ_MEDIA_IMAGES", "READ_MEDIA_VIDEO"]
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-localization",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Unichat + a besoin d'accéder à vos photos pour les partager.",
+          "cameraPermission": "Unichat + a besoin de la caméra pour prendre des photos."
+        }
+      ]
+    ],
+    "extra": {
+      "supabaseUrl": "https://yjfkghrfiwwbtfguovjw.supabase.co",
+      "supabaseKey": "sb_publishable_eo1GTfEFLqu38r1rIxLNxg_n48EHA0O"
+    }
+  }
+}
