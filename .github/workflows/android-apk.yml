@@ -37,21 +37,17 @@ jobs:
         run: npx expo prebuild --platform android --no-install
 
       - name: Compiler l'APK
-        working-directory: android
         run: |
-          sed -i 's/^reactNativeArchitectures=.*/reactNativeArchitectures=arm64-v8a,armeabi-v7a/' gradle.properties
-          grep reactNativeArchitectures gradle.properties
-          ./gradlew assembleRelease --no-daemon
+          bash scripts/set-abi.sh arm64-v8a armeabi-v7a
+          cd android && ./gradlew assembleRelease --no-daemon
 
       - name: Renommer l'APK
         run: cp android/app/build/outputs/apk/release/app-release.apk unichat-plus.apk
 
       - name: Compiler la version légère (téléphones récents, 64 bits)
-        working-directory: android
         run: |
-          sed -i 's/^reactNativeArchitectures=.*/reactNativeArchitectures=arm64-v8a/' gradle.properties
-          grep reactNativeArchitectures gradle.properties
-          ./gradlew assembleRelease --no-daemon
+          bash scripts/set-abi.sh arm64-v8a
+          cd android && ./gradlew assembleRelease --no-daemon
 
       - name: Renommer la version légère
         run: cp android/app/build/outputs/apk/release/app-release.apk unichat-plus-leger.apk && ls -la *.apk
