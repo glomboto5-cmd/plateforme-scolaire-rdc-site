@@ -2,6 +2,7 @@ import * as Contacts from 'expo-contacts';
 import { Platform } from 'react-native';
 import { supabase } from './supabase';
 import { cleanPhone } from './whatsapp';
+import { getWhatsAppContacts } from '../../modules/whatsapp-contacts';
 
 // Lit le répertoire du téléphone (les mêmes contacts que ceux de WhatsApp),
 // puis indique lesquels sont déjà inscrits sur Unichat +.
@@ -31,6 +32,17 @@ export async function loadPhoneContacts() {
       if (!byPhone[e164]) byPhone[e164] = { key: e164, phone: e164, name: c.name || e164, photo };
     });
   });
+  // Vrais contacts WhatsApp / WhatsApp Business (enregistrés par WhatsApp sur le téléphone)
+  const wa = await getWhatsAppContacts();
+  const waAvailable = Array.isArray(wa) && wa.length > 0;
+  (wa || []).forEach((w) => {
+    const d = cleanPhone(w.phone);
+    if (!/^[1-9]\d{7,14}$/.test(d)) return;
+    const e164 = '+' + d;
+    if (!byPhone[e164]) byPhone[e164] = { key: e164, phone: e164, name: w.name || e164, photo: null };
+    byPhone[e164].whatsapp = !!(w.whatsapp || w.personal);
+    byPhone[e164].business = !!w.business;
+  });
   const list = Object.values(byPhone);
 
   // Correspondance avec les comptes Unichat + (par paquets)
@@ -43,5 +55,5 @@ export async function loadPhoneContacts() {
   }
 
   list.sort((a, b) => (b.profile ? 1 : 0) - (a.profile ? 1 : 0) || a.name.localeCompare(b.name));
-  return { granted: true, list };
+  return { granted: true, list, waAvailable };
 }

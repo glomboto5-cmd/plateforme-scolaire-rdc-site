@@ -139,13 +139,21 @@ export default function NewChatScreen({ navigation }) {
   if (searching) results.forEach((p) => !registered[p.id] && (registered[p.id] = { key: 'u' + p.id, name: p.display_name, profile: p }));
   const match = (x) => !needle || String(x.name || '').toLowerCase().includes(needle) || String(x.phone || '').includes(needle.replace(/\s/g, ''));
   const onUnichat = Object.values(registered).filter((x) => x.profile.id !== userId).filter((x) => searching ? true : match(x)).sort((a, b) => a.name.localeCompare(b.name));
-  const others = phone.list.filter((c) => !c.profile).filter(match);
+  const notReg = phone.list.filter((c) => !c.profile).filter(match);
+  const onWhatsApp = notReg.filter((c) => c.whatsapp || c.business);
+  const others = notReg.filter((c) => !(c.whatsapp || c.business));
 
   const rows = [
     { kind: 'section', key: 's1', title: L('Contacts sur Unichat +', 'Contacts on Unichat +') },
     ...(onUnichat.length ? onUnichat.map((x) => ({ kind: 'user', key: x.key, item: x })) : [{ kind: 'empty', key: 'e1' }]),
-    ...(others.length ? [{ kind: 'section', key: 's2', title: L('Inviter sur Unichat +', 'Invite to Unichat +') }] : []),
-    ...others.map((c) => ({ kind: 'phone', key: 'p' + c.phone, item: c })),
+    ...(onWhatsApp.length ? [{ kind: 'section', key: 's-wa', title: L('Contacts sur WhatsApp', 'Contacts on WhatsApp') + ' (' + onWhatsApp.length + ')' }] : []),
+    ...onWhatsApp.map((c) => ({ kind: 'phone', key: 'w' + c.phone, item: c })),
+    ...(others.length && phone.waAvailable && !phone.showOthers && !searching
+      ? [{ kind: 'more', key: 's-more', count: others.length }]
+      : [
+          ...(others.length ? [{ kind: 'section', key: 's2', title: (phone.waAvailable ? L('Autres contacts du téléphone', 'Other phone contacts') : L('Inviter sur Unichat +', 'Invite to Unichat +')) + ' (' + others.length + ')' }] : []),
+          ...others.map((c) => ({ kind: 'phone', key: 'p' + c.phone, item: c })),
+        ]),
   ];
 
   const Action = ({ icon, label, onPress, right }) => (
@@ -236,6 +244,15 @@ export default function NewChatScreen({ navigation }) {
         }
         renderItem={({ item: r }) => {
           if (r.kind === 'section') return <Section title={r.title} />;
+          if (r.kind === 'more') {
+            return (
+              <Pressable onPress={() => setPhone((p) => ({ ...p, showOthers: true }))} style={{ padding: 16 }}>
+                <Text style={{ color: colors.primary, fontWeight: '700' }}>
+                  {L('Afficher les autres contacts du téléphone (sans WhatsApp)', 'Show other phone contacts')} ({r.count})
+                </Text>
+              </Pressable>
+            );
+          }
           if (r.kind === 'empty') {
             return <Muted style={{ paddingHorizontal: 16, paddingBottom: 6 }}>{searching ? t('noResults') : L("Aucun de vos contacts n'est encore inscrit. Invitez-les ci-dessous.", 'None of your contacts is registered yet.')}</Muted>;
           }
@@ -258,9 +275,11 @@ export default function NewChatScreen({ navigation }) {
               <Avatar uri={c.photo} name={c.name} size={50} />
               <View style={{ marginLeft: 14, flex: 1 }}>
                 <Title numberOfLines={1} style={{ fontSize: 17 }}>{c.name}</Title>
-                <Muted numberOfLines={1}>{c.phone}</Muted>
+                <Muted numberOfLines={1}>
+                  {c.business ? '💼 WhatsApp Business · ' : c.whatsapp ? '🟢 WhatsApp · ' : ''}{c.phone}
+                </Muted>
               </View>
-              <Pressable onPress={() => sendSms(c.phone, invitationText(myName))} hitSlop={6} style={{ paddingHorizontal: 10, paddingVertical: 6 }}>
+              <Pressable onPress={() => (c.whatsapp || c.business ? openWhatsAppChat(c.phone, invitationText(myName)) : sendSms(c.phone, invitationText(myName)))} hitSlop={6} style={{ paddingHorizontal: 10, paddingVertical: 6 }}>
                 <Text style={{ color: colors.brand, fontWeight: '700' }}>{t('invite')}</Text>
               </Pressable>
             </Pressable>
