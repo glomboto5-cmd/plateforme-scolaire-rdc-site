@@ -4,12 +4,12 @@ import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Clipboard from 'expo-clipboard';
 import { supabase, errText } from '../lib/supabase';
-import { t, tSystem } from '../lib/i18n';
+import { t, tSystem, L } from '../lib/i18n';
 import { useApp } from '../AppContext';
 import { ActionSheet, Avatar, Input, Button } from '../components/ui';
 import { loadConversation } from '../lib/chat';
 import { signedUrl, uploadFile } from '../lib/upload';
-import { startCall } from '../lib/calls';
+import { startCall, joinMeeting } from '../lib/calls';
 import { PLATFORMS, socialUrl } from './SocialScreen';
 
 const PRESETS = [
@@ -178,6 +178,22 @@ export default function ChatScreen({ route, navigation }) {
     return m;
   }, [conv]);
 
+  // Réunion internationale en cours dans ce groupe
+  const [activeMeeting, setActiveMeeting] = useState(null);
+  useEffect(() => {
+    if (!isGroup) return;
+    let alive = true;
+    const check = async () => {
+      const since = new Date(Date.now() - 3 * 3600 * 1000).toISOString();
+      const { data } = await supabase.from('calls').select('id, media, initiator_id, status, created_at').eq('conversation_id', id).in('status', ['ringing', 'ongoing']).gte('created_at', since).order('created_at', { ascending: false }).limit(1);
+      if (alive) setActiveMeeting((data && data[0]) || null);
+    };
+    check();
+    const ch = supabase.channel('meet-watch-' + id).on('postgres_changes', { event: '*', schema: 'public', table: 'calls', filter: 'conversation_id=eq.' + id }, check).subscribe();
+    const iv = setInterval(check, 30000);
+    return () => { alive = false; clearInterval(iv); supabase.removeChannel(ch); };
+  }, [id, isGroup]);
+
   useLayoutEffect(() => {
     if (!conv) return;
     navigation.setOptions({
@@ -205,6 +221,27 @@ export default function ChatScreen({ route, navigation }) {
               <Text style={{ fontSize: 20 }}>📞</Text>
             </Pressable>
           ) : null}
+          {isGroup ? (
+            activeMeeting ? (
+              <Pressable onPress={() => joinMeeting(navigation, activeMeeting, conv.name)} hitSlop={8} style={{ marginHorizontal: 6, backgroundColor: '#1DAA61', borderRadius: 14, paddingHorizontal: 10, paddingVertical: 4 }}>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 13 }}>📹 {L('Rejoindre', 'Join')}</Text>
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={() =>
+                  Alert.alert(L('Réunion internationale', 'International meeting'), L('Démarrer une réunion avec les membres du groupe ?', 'Start a meeting with the group?'), [
+                    { text: L('Vidéo', 'Video'), onPress: () => startCall(navigation, conv, 'video', userId) },
+                    { text: L('Audio', 'Audio'), onPress: () => startCall(navigation, conv, 'audio', userId) },
+                    { text: L('Annuler', 'Cancel'), style: 'cancel' },
+                  ])
+                }
+                hitSlop={8}
+                style={{ paddingHorizontal: 9 }}
+              >
+                <Text style={{ fontSize: 20 }}>📹</Text>
+              </Pressable>
+            )
+          ) : null}
           {canEditInfo ? (
             <Pressable onPress={() => setSheet({ kind: 'ephemeral' })} hitSlop={8} style={{ paddingHorizontal: 9 }}>
               <Text style={{ fontSize: 20 }}>⏱</Text>
@@ -213,7 +250,7 @@ export default function ChatScreen({ route, navigation }) {
         </View>
       ),
     });
-  }, [conv, navigation, isGroup, canEditInfo, userId]);
+  }, [conv, navigation, isGroup, canEditInfo, userId, activeMeeting]);
 
   const openContactSheet = async () => {
     if (!conv || !conv.other) return;

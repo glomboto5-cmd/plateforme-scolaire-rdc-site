@@ -25,6 +25,7 @@ import SellerShopScreen from './src/screens/SellerShopScreen';
 import OrderScreen from './src/screens/OrderScreen';
 import CallsScreen from './src/screens/CallsScreen';
 import CallScreen from './src/screens/CallScreen';
+import MeetingScreen from './src/screens/MeetingScreen';
 import CommunitiesScreen from './src/screens/CommunitiesScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import SettingsDetailScreen from './src/screens/SettingsDetailScreen';
@@ -105,6 +106,7 @@ function Root() {
             <Stack.Screen name="SellerShop" component={SellerShopScreen} options={{ title: L('Boutique', 'Shop') }} />
             <Stack.Screen name="Order" component={OrderScreen} options={{ title: L('Commande', 'Order') }} />
             <Stack.Screen name="Call" component={CallScreen} options={{ headerShown: false, gestureEnabled: false }} />
+            <Stack.Screen name="Meeting" component={MeetingScreen} options={{ headerShown: false, gestureEnabled: false }} />
           </>
         )}
       </Stack.Navigator>

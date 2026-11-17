@@ -173,6 +173,11 @@ export function AppProvider({ children }) {
         if (Date.now() - new Date(c.started_at).getTime() > 60000) return;
         const { data: caller } = await supabase.from('profiles').select('display_name,avatar_url').eq('id', c.initiator_id).maybeSingle();
         const av = caller && caller.avatar_url ? (caller.avatar_url.startsWith('http') ? caller.avatar_url : supabase.storage.from('avatars').getPublicUrl(caller.avatar_url).data.publicUrl) : null;
+        const { data: cv } = await supabase.from('conversations').select('type,title').eq('id', c.conversation_id).maybeSingle();
+        if (cv && cv.type !== 'direct') {
+          navigate('Meeting', { callId: c.id, media: c.media, organizerId: c.initiator_id, title: cv.title, incoming: true, organizerName: caller ? caller.display_name : '' });
+          return;
+        }
         navigate('Call', { callId: c.id, media: c.media, incoming: true, peerName: caller ? caller.display_name : '?', peerAvatar: av });
       })
       .subscribe();
