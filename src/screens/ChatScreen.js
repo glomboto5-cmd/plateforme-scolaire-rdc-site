@@ -17,6 +17,19 @@ const PRESETS = [
   { key: 'd90', seconds: 7776000 },
 ];
 
+const DAYS_FR = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+const MONTHS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+function dayLabel(iso) {
+  const d = new Date(iso);
+  const today = new Date();
+  const diff = Math.round((new Date(today.toDateString()) - new Date(d.toDateString())) / 86400000);
+  if (diff === 0) return t('today');
+  if (diff === 1) return t('yesterday');
+  if (diff < 7) return DAYS_FR[d.getDay()];
+  return d.getDate() + ' ' + MONTHS_FR[d.getMonth()] + ' ' + d.getFullYear();
+}
+
 function hhmm(iso) {
   const d = new Date(iso);
   return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
@@ -71,6 +84,7 @@ export default function ChatScreen({ route, navigation }) {
   const [sheet, setSheet] = useState(null);
   const [sending, setSending] = useState(false);
   const [customDays, setCustomDays] = useState('');
+  const [unreadMark, setUnreadMark] = useState(null);
 
   const loadAll = useCallback(async () => {
     const c = await loadConversation(id, userId).catch(() => null);
@@ -85,6 +99,16 @@ export default function ChatScreen({ route, navigation }) {
       .eq('conversation_id', id)
       .order('created_at', { ascending: false })
       .limit(300);
+    // Point de départ du bandeau « N messages non lus » (avant de marquer comme lu)
+    const { data: me } = await supabase
+      .from('conversation_participants')
+      .select('last_read_at')
+      .eq('conversation_id', id)
+      .eq('user_id', userId)
+      .maybeSingle();
+    const lastRead = me && me.last_read_at;
+    const unread = (data || []).filter((m) => m.sender_id !== userId && m.type !== 'system' && (!lastRead || m.created_at > lastRead));
+    setUnreadMark(unread.length ? { id: unread[unread.length - 1].id, count: unread.length } : null);
     setMessages(data || []);
     supabase.rpc('mark_messages', { p_conv: id, p_read: true });
   }, [id, userId]);
@@ -310,7 +334,32 @@ export default function ChatScreen({ route, navigation }) {
     return 'sent';
   };
 
-  const renderItem = ({ item: m }) => {
+  // Séparateurs façon messagerie : jour (Aujourd'hui / Hier / date) et « N messages non lus »
+  const renderItem = ({ item: m, index }) => {
+    const older = messages[index + 1];
+    const showDay = !older || new Date(older.created_at).toDateString() !== new Date(m.created_at).toDateString();
+    const showUnread = unreadMark && unreadMark.id === m.id;
+    if (!showDay && !showUnread) return renderBubble(m);
+    return (
+      <View>
+        {showDay ? (
+          <View style={{ alignSelf: 'center', backgroundColor: colors.card, paddingHorizontal: 12, paddingVertical: 5, borderRadius: 8, marginVertical: 8, elevation: 1 }}>
+            <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: '600' }}>{dayLabel(m.created_at)}</Text>
+          </View>
+        ) : null}
+        {showUnread ? (
+          <View style={{ alignSelf: 'center', backgroundColor: colors.card, paddingHorizontal: 16, paddingVertical: 6, borderRadius: 16, marginVertical: 8, elevation: 1 }}>
+            <Text style={{ color: colors.text, fontSize: 13 }}>
+              {unreadMark.count} {unreadMark.count > 1 ? t('unreadMessages') : t('unreadMessage')}
+            </Text>
+          </View>
+        ) : null}
+        {renderBubble(m)}
+      </View>
+    );
+  };
+
+  const renderBubble = (m) => {
     if (m.type === 'system') {
       return (
         <View style={{ alignSelf: 'center', backgroundColor: colors.system, paddingHorizontal: 12, paddingVertical: 5, borderRadius: 8, marginVertical: 6, maxWidth: '85%' }}>
