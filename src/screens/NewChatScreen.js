@@ -275,9 +275,7 @@ export default function NewChatScreen({ navigation }) {
               <Avatar uri={c.photo} name={c.name} size={50} />
               <View style={{ marginLeft: 14, flex: 1 }}>
                 <Title numberOfLines={1} style={{ fontSize: 17 }}>{c.name}</Title>
-                <Muted numberOfLines={1}>
-                  {c.business ? '💼 WhatsApp Business · ' : c.whatsapp ? '🟢 WhatsApp · ' : ''}{c.phone}
-                </Muted>
+                <Muted numberOfLines={1}>{c.phone}</Muted>
               </View>
               <Pressable onPress={() => (c.whatsapp || c.business ? openWhatsAppChat(c.phone, invitationText(myName)) : sendSms(c.phone, invitationText(myName)))} hitSlop={6} style={{ paddingHorizontal: 10, paddingVertical: 6 }}>
                 <Text style={{ color: colors.brand, fontWeight: '700' }}>{t('invite')}</Text>
