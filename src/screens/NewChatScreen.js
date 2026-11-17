@@ -21,8 +21,6 @@ export default function NewChatScreen({ navigation }) {
   const [results, setResults] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [invites, setInvites] = useState([]);
-  const [waOpen, setWaOpen] = useState(false);
-  const [waPhone, setWaPhone] = useState('');
   const [sheet, setSheet] = useState(null);
   const [phone, setPhone] = useState({ loading: true, granted: true, list: [] });
   const myName = profile && profile.display_name;
@@ -193,27 +191,6 @@ export default function NewChatScreen({ navigation }) {
               <Action icon="👥" label={L('Nouveau groupe', 'New group')} onPress={() => navigation.replace('NewGroup')} />
               <Action icon="👤" label={L('Nouveau contact', 'New contact')} onPress={newContact} />
               <Action icon="🏘️" label={L('Nouvelle communauté', 'New community')} onPress={() => navigation.navigate('Home', { screen: 'Communities' })} />
-              <Action icon="🟢" label={L('Écrire à un numéro (WhatsApp)', 'Message a number (WhatsApp)')} onPress={() => setWaOpen((x) => !x)} />
-              {waOpen ? (
-                <View style={{ paddingHorizontal: 16, gap: 8, paddingBottom: 8 }}>
-                  <Input placeholder={t('whatsappPhone')} value={waPhone} onChangeText={setWaPhone} keyboardType="phone-pad" />
-                  <View style={{ flexDirection: 'row', gap: 8 }}>
-                    <Pressable
-                      onPress={() => (isValidPhone(waPhone) ? openWhatsAppChat(waPhone) : Alert.alert(t('error'), t('phoneInvalid')))}
-                      style={{ flex: 1, backgroundColor: '#25D366', borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}
-                    >
-                      <Text style={{ color: '#fff', fontWeight: '700' }}>{t('whatsappWrite')}</Text>
-                    </Pressable>
-                    <Pressable
-                      onPress={() => (isValidPhone(waPhone) ? sendSms('+' + cleanPhone(waPhone)) : Alert.alert(t('error'), t('phoneInvalid')))}
-                      style={{ flex: 1, borderWidth: 1, borderColor: colors.primary, borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}
-                    >
-                      <Text style={{ color: colors.primary, fontWeight: '700' }}>✉️ SMS</Text>
-                    </Pressable>
-                  </View>
-                </View>
-              ) : null}
-
               {invites.length > 0 ? <Section title={t('invitations')} /> : null}
               {invites.map((inv) => (
                 <View key={inv.id} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10 }}>
