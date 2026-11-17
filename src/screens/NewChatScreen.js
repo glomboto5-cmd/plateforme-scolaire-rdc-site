@@ -6,6 +6,7 @@ import { useApp } from '../AppContext';
 import { Avatar, Input, Muted, Row, SectionTitle, Title } from '../components/ui';
 import { avatarUri, searchProfiles, PROFILE_FIELDS } from '../lib/chat';
 import { invitationText, isValidPhone, openWhatsAppChat, shareOnWhatsApp } from '../lib/whatsapp';
+import { loadPhoneContacts } from '../lib/phoneContacts';
 
 export default function NewChatScreen({ navigation }) {
   const { colors, userId, profile } = useApp();
@@ -36,6 +37,16 @@ export default function NewChatScreen({ navigation }) {
 
   useEffect(() => { loadSide(); }, [loadSide]);
 
+  // Contacts du téléphone (les mêmes que dans WhatsApp)
+  const [phone, setPhone] = useState({ loading: true, granted: true, list: [] });
+  useEffect(() => {
+    let alive = true;
+    loadPhoneContacts()
+      .then((r) => alive && setPhone({ loading: false, ...r }))
+      .catch(() => alive && setPhone({ loading: false, granted: false, list: [] }));
+    return () => { alive = false; };
+  }, []);
+
   useEffect(() => {
     const h = setTimeout(async () => setResults(await searchProfiles(q, userId)), 300);
     return () => clearTimeout(h);
@@ -53,7 +64,19 @@ export default function NewChatScreen({ navigation }) {
     loadSide();
   };
 
-  const people = q.trim().length >= 2 ? results : contacts.map((c) => c.profiles).filter(Boolean);
+  const searching = q.trim().length >= 2;
+  const needle = q.trim().toLowerCase();
+  const people = searching ? results : contacts.map((c) => c.profiles).filter(Boolean);
+  const known = new Set(people.map((p) => p.id));
+  const phoneRows = phone.list
+    .filter((c) => !c.profile || !known.has(c.profile.id))
+    .filter((c) => !needle || c.name.toLowerCase().includes(needle) || c.phone.includes(needle.replace(/\s/g, '')));
+  const rows = [
+    ...people.map((p) => ({ kind: 'user', key: 'u' + p.id, profile: p })),
+    ...(phoneRows.length ? [{ kind: 'header', key: 'h-phone' }] : []),
+    ...phoneRows.map((c) => ({ kind: 'phone', key: 'p' + c.phone, contact: c })),
+  ];
+  const myName = profile && profile.display_name;
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
@@ -61,8 +84,9 @@ export default function NewChatScreen({ navigation }) {
         <Input placeholder={t('searchPeople')} value={q} onChangeText={setQ} autoCapitalize="none" autoFocus />
       </View>
       <FlatList
-        data={people}
-        keyExtractor={(p) => p.id}
+        data={rows}
+        keyExtractor={(r) => r.key}
+        initialNumToRender={25}
         keyboardShouldPersistTaps="handled"
         ListHeaderComponent={
           <>
@@ -119,19 +143,59 @@ export default function NewChatScreen({ navigation }) {
                 </Pressable>
               </View>
             ))}
-            <SectionTitle>{q.trim().length >= 2 ? t('search') : t('contacts')}</SectionTitle>
+            <SectionTitle>{searching ? t('search') : t('onUnichat')}</SectionTitle>
+            {!people.length ? <Muted style={{ paddingHorizontal: 16, paddingBottom: 6 }}>{searching ? t('noResults') : t('newChatHint')}</Muted> : null}
           </>
         }
-        ListEmptyComponent={<Muted style={{ padding: 16 }}>{q.trim().length >= 2 ? t('noResults') : t('newChatHint')}</Muted>}
-        renderItem={({ item }) => (
-          <Row onPress={() => open(item.id)}>
-            <Avatar uri={avatarUri(item)} name={item.display_name} />
-            <View style={{ marginLeft: 12, flex: 1 }}>
-              <Title>{item.display_name}{item.is_business ? ' 🏪' : ''}</Title>
-              <Muted numberOfLines={1}>@{item.handle}{item.about ? ' · ' + item.about : ''}</Muted>
-            </View>
-          </Row>
-        )}
+        ListFooterComponent={
+          phone.loading ? (
+            <Muted style={{ padding: 16 }}>{t('phoneLoading')}</Muted>
+          ) : !phone.granted ? (
+            <Muted style={{ padding: 16 }}>{t('phoneDenied')}</Muted>
+          ) : <View style={{ height: 24 }} />
+        }
+        renderItem={({ item }) => {
+          if (item.kind === 'header') return <SectionTitle>📱 {t('phoneContacts')}</SectionTitle>;
+          if (item.kind === 'user') {
+            const p = item.profile;
+            return (
+              <Row onPress={() => open(p.id)}>
+                <Avatar uri={avatarUri(p)} name={p.display_name} />
+                <View style={{ marginLeft: 12, flex: 1 }}>
+                  <Title>{p.display_name}{p.is_business ? ' 🏪' : ''}</Title>
+                  <Muted numberOfLines={1}>@{p.handle}{p.about ? ' · ' + p.about : ''}</Muted>
+                </View>
+              </Row>
+            );
+          }
+          const c = item.contact;
+          if (c.profile) {
+            return (
+              <Row onPress={() => open(c.profile.id)}>
+                <Avatar uri={avatarUri(c.profile)} name={c.name} />
+                <View style={{ marginLeft: 12, flex: 1 }}>
+                  <Title numberOfLines={1}>{c.name}</Title>
+                  <Muted numberOfLines={1}>✅ Unichat + · {c.phone}</Muted>
+                </View>
+              </Row>
+            );
+          }
+          return (
+            <Row>
+              <Avatar name={c.name} />
+              <View style={{ marginLeft: 12, flex: 1 }}>
+                <Title numberOfLines={1}>{c.name}</Title>
+                <Muted numberOfLines={1}>{c.phone}</Muted>
+              </View>
+              <Pressable onPress={() => openWhatsAppChat(c.phone)} hitSlop={6} style={{ backgroundColor: '#25D366', paddingHorizontal: 10, paddingVertical: 7, borderRadius: 14, marginRight: 6 }}>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 12 }}>WhatsApp</Text>
+              </Pressable>
+              <Pressable onPress={() => openWhatsAppChat(c.phone, invitationText(myName))} hitSlop={6} style={{ borderWidth: 1, borderColor: colors.primary, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 14 }}>
+                <Text style={{ color: colors.primary, fontWeight: '700', fontSize: 12 }}>{t('invite')}</Text>
+              </Pressable>
+            </Row>
+          );
+        }}
       />
     </View>
   );

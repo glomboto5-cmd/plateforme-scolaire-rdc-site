@@ -2,7 +2,7 @@
   "expo": {
     "name": "Unichat +",
     "slug": "unichat-plus",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -19,13 +19,14 @@
     },
     "android": {
       "package": "com.unichatplus.app",
-      "versionCode": 5,
+      "versionCode": 6,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0E7C66"
       },
       "permissions": [
         "CAMERA",
+        "READ_CONTACTS",
         "READ_MEDIA_IMAGES",
         "READ_MEDIA_VIDEO"
       ]
@@ -35,6 +36,12 @@
     },
     "plugins": [
       "expo-localization",
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Unichat + affiche vos contacts pour vous permettre de leur écrire ou de les inviter."
+        }
+      ],
       [
         "expo-image-picker",
         {

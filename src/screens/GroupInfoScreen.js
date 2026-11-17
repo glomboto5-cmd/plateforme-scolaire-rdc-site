@@ -9,6 +9,7 @@ import { useApp } from '../AppContext';
 import { ActionSheet, Avatar, Button, Input, Muted, Row, SectionTitle, Title } from '../components/ui';
 import { avatarUri, loadConversation } from '../lib/chat';
 import { publicUrl, uploadFile } from '../lib/upload';
+import { invitationText, shareOnWhatsApp } from '../lib/whatsapp';
 
 const ROLE_ORDER = { owner: 0, admin: 1, moderator: 2, member: 3 };
 
@@ -190,6 +191,7 @@ export default function GroupInfoScreen({ route, navigation }) {
               </Muted>
               <View style={{ flexDirection: 'row', gap: 16 }}>
                 <Pressable onPress={() => shareLink(l)}><Text style={{ color: colors.primary, fontWeight: '600' }}>{t('share')}</Text></Pressable>
+                <Pressable onPress={() => shareOnWhatsApp(`${t('inviteLink')} « ${conv.title} » — Unichat +\nCode : ${l.code}\n${invitationText()}`)}><Text style={{ color: '#25D366', fontWeight: '700' }}>{t('shareWhatsApp')}</Text></Pressable>
                 <Pressable onPress={() => Clipboard.setStringAsync(l.code)}><Text style={{ color: colors.primary, fontWeight: '600' }}>{t('copy')}</Text></Pressable>
                 <Pressable onPress={() => call('revoke_invite_link', { p_link: l.id })}><Text style={{ color: colors.danger, fontWeight: '600' }}>{t('revoke')}</Text></Pressable>
               </View>
