@@ -6,7 +6,7 @@ import { useApp } from '../AppContext';
 import { Avatar, Button, Muted, Title } from '../components/ui';
 import { avatarUri } from '../lib/chat';
 
-const APK = 'https://github.com/glomboto5-cmd/plateforme-scolaire-rdc-site/releases/download/unichat-apk/unichat-plus-leger.apk';
+const APK = 'https://github.com/glomboto5-cmd/plateforme-scolaire-rdc-site/releases/download/ange-chat-apk/ange-chat-plus-leger.apk';
 
 export function eventWhen(iso) {
   const d = new Date(iso);

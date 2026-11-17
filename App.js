@@ -36,6 +36,15 @@ import NewContactScreen from './src/screens/NewContactScreen';
 import AutomationScreen from './src/screens/AutomationScreen';
 import NotificationsScreen from './src/screens/NotificationsScreen';
 import SocialScreen from './src/screens/SocialScreen';
+import ChannelsScreen from './src/screens/ChannelsScreen';
+import ChannelScreen from './src/screens/ChannelScreen';
+import FeedScreen from './src/screens/FeedScreen';
+import DiscoverScreen from './src/screens/DiscoverScreen';
+import AdsManagerScreen from './src/screens/AdsManagerScreen';
+import AdEditScreen from './src/screens/AdEditScreen';
+import AdPrefsScreen from './src/screens/AdPrefsScreen';
+import BusinessPlansScreen from './src/screens/BusinessPlansScreen';
+import OwnerDashboardScreen from './src/screens/OwnerDashboardScreen';
 import { navigationRef } from './src/lib/nav';
 import { L } from './src/lib/i18n';
 
@@ -107,6 +116,15 @@ function Root() {
             <Stack.Screen name="Order" component={OrderScreen} options={{ title: L('Commande', 'Order') }} />
             <Stack.Screen name="Call" component={CallScreen} options={{ headerShown: false, gestureEnabled: false }} />
             <Stack.Screen name="Meeting" component={MeetingScreen} options={{ headerShown: false, gestureEnabled: false }} />
+            <Stack.Screen name="Channels" component={ChannelsScreen} options={{ title: L('Chaînes', 'Channels') }} />
+            <Stack.Screen name="Channel" component={ChannelScreen} options={{ title: L('Chaîne', 'Channel') }} />
+            <Stack.Screen name="Feed" component={FeedScreen} options={{ title: L("Fil d'actualité", 'News feed') }} />
+            <Stack.Screen name="Discover" component={DiscoverScreen} options={{ title: L('Découvrir', 'Discover') }} />
+            <Stack.Screen name="AdsManager" component={AdsManagerScreen} options={{ title: L('Mes publicités', 'My ads') }} />
+            <Stack.Screen name="AdEdit" component={AdEditScreen} options={{ title: L('Publicité', 'Ad') }} />
+            <Stack.Screen name="AdPrefs" component={AdPrefsScreen} options={{ title: L('Préférences publicitaires', 'Ad preferences') }} />
+            <Stack.Screen name="BusinessPlans" component={BusinessPlansScreen} options={{ title: L('Offres Pro', 'Pro plans') }} />
+            <Stack.Screen name="OwnerDashboard" component={OwnerDashboardScreen} options={{ title: L('Tableau de bord', 'Dashboard') }} />
           </>
         )}
       </Stack.Navigator>

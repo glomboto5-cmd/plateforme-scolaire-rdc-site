@@ -36,7 +36,8 @@
     "react-dom": "18.3.1",
     "react-native-web": "~0.19.13",
     "@expo/metro-runtime": "~4.0.1",
-    "@opentelemetry/api": "^1.9.0"
+    "@opentelemetry/api": "^1.9.0",
+    "expo-video": "~2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2"

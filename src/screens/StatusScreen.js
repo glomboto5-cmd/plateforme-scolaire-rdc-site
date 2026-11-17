@@ -9,6 +9,8 @@ import { ActionSheet, Avatar, Button, Muted, Row, SectionTitle, Title } from '..
 import { avatarUri, formatTime } from '../lib/chat';
 import { uploadFile } from '../lib/upload';
 import { t } from '../lib/i18n';
+import AdCard from '../components/AdCard';
+import { fetchAds } from '../lib/ads';
 
 const BG = ['#0E7C66', '#1F7AE0', '#8E44AD', '#D35400', '#C0392B', '#2C3E50', '#16A085'];
 
@@ -22,6 +24,7 @@ export default function StatusScreen({ navigation }) {
   const [text, setText] = useState('');
   const [bg, setBg] = useState(BG[0]);
   const [busy, setBusy] = useState(false);
+  const [ads, setAds] = useState([]);
 
   const load = useCallback(async () => {
     const now = new Date().toISOString();
@@ -43,6 +46,7 @@ export default function StatusScreen({ navigation }) {
       });
     setOthers(Object.values(byUser).sort((a, b) => (a.seen - b.seen) || String(b.last).localeCompare(String(a.last))));
     setLoading(false);
+    fetchAds('status', null, 2).then(setAds);
   }, [userId]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
@@ -92,6 +96,18 @@ export default function StatusScreen({ navigation }) {
         refreshControl={<RefreshControl refreshing={loading} onRefresh={load} tintColor={colors.primary} />}
         ListHeaderComponent={
           <>
+            <View style={{ flexDirection: 'row', gap: 8, paddingHorizontal: 12, paddingTop: 10 }}>
+              {[
+                ['📰', L("Fil d'actualité", 'Feed'), 'Feed'],
+                ['📢', L('Chaînes', 'Channels'), 'Channels'],
+                ['🔍', L('Découvrir', 'Discover'), 'Discover'],
+              ].map(([ic, label, route]) => (
+                <Pressable key={route} onPress={() => navigation.navigate(route)} style={{ flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 14, backgroundColor: colors.bgAlt }}>
+                  <Text style={{ fontSize: 20 }}>{ic}</Text>
+                  <Text style={{ color: colors.text, fontSize: 12, fontWeight: '600', marginTop: 2 }}>{label}</Text>
+                </Pressable>
+              ))}
+            </View>
             <Row onPress={() => (mine.length ? navigation.navigate('StatusViewer', { items: mine, mine: true }) : setSheet(true))}>
               <View>
                 <View style={{ borderWidth: mine.length ? 2.5 : 0, borderColor: colors.brand, borderRadius: 30, padding: 2 }}>
@@ -122,6 +138,11 @@ export default function StatusScreen({ navigation }) {
               )}
             </Muted>
           ) : null
+        }
+        ListFooterComponent={
+          <View style={{ paddingBottom: 90 }}>
+            {ads.map((ad) => <AdCard key={ad.id} ad={ad} placement="status" navigation={navigation} compact />)}
+          </View>
         }
         renderItem={({ item: g }) => (
           <Row onPress={() => navigation.navigate('StatusViewer', { items: g.items, mine: false })}>

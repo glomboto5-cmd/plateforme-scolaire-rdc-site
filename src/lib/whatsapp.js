@@ -21,7 +21,7 @@ export function invitationText(name) {
   return (
     (name ? name + ' vous invite sur Ange chat + ' : 'Rejoignez-moi sur Ange chat + ') +
     '— messagerie, groupes et boutique en une seule application.\n' +
-    'Télécharger : https://github.com/glomboto5-cmd/plateforme-scolaire-rdc-site/releases/download/unichat-apk/unichat-plus-leger.apk'
+    'Télécharger : https://github.com/glomboto5-cmd/plateforme-scolaire-rdc-site/releases/download/ange-chat-apk/ange-chat-plus-leger.apk'
   );
 }
 

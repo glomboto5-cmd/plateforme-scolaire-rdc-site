@@ -102,7 +102,7 @@ export default function NewGroupScreen({ navigation, route }) {
     if (!code) return;
     await Share.share({
       message: L(
-        `Rejoignez le groupe « ${name} » sur Ange chat + : unichatplus://join/${code}\nCode : ${code}\nTéléchargez l'application : https://github.com/glomboto5-cmd/plateforme-scolaire-rdc-site/releases/download/unichat-apk/unichat-plus-leger.apk`,
+        `Rejoignez le groupe « ${name} » sur Ange chat + : unichatplus://join/${code}\nCode : ${code}\nTéléchargez l'application : https://github.com/glomboto5-cmd/plateforme-scolaire-rdc-site/releases/download/ange-chat-apk/ange-chat-plus-leger.apk`,
         `Join "${name}" on Ange chat +: unichatplus://join/${code}`
       ),
     });
