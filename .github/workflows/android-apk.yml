@@ -43,17 +43,24 @@ jobs:
       - name: Renommer l'APK
         run: cp android/app/build/outputs/apk/release/app-release.apk unichat-plus.apk
 
+      - name: Compiler la version légère (téléphones récents, 64 bits)
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a
+
+      - name: Renommer la version légère
+        run: cp android/app/build/outputs/apk/release/app-release.apk unichat-plus-leger.apk && ls -la *.apk
+
       - uses: actions/upload-artifact@v4
         with:
           name: unichat-plus-apk
-          path: unichat-plus.apk
+          path: '*.apk'
 
       - name: Publier l'APK (lien de téléchargement)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release delete unichat-apk --yes --cleanup-tag || true
-          gh release create unichat-apk unichat-plus.apk \
+          gh release create unichat-apk unichat-plus.apk unichat-plus-leger.apk \
             --target "${GITHUB_SHA}" \
             --title "Unichat + — APK Android (version ${{ github.run_number }})" \
             --notes "Application Android Unichat +, générée automatiquement. Téléchargez unichat-plus.apk puis ouvrez-le sur votre téléphone (autorisez l'installation d'applications inconnues)." \

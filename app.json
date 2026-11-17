@@ -2,7 +2,7 @@
   "expo": {
     "name": "Unichat +",
     "slug": "unichat-plus",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -19,12 +19,16 @@
     },
     "android": {
       "package": "com.unichatplus.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0E7C66"
       },
-      "permissions": ["CAMERA", "READ_MEDIA_IMAGES", "READ_MEDIA_VIDEO"]
+      "permissions": [
+        "CAMERA",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO"
+      ]
     },
     "web": {
       "bundler": "metro"
@@ -36,6 +40,15 @@
         {
           "photosPermission": "Unichat + a besoin d'accéder à vos photos pour les partager.",
           "cameraPermission": "Unichat + a besoin de la caméra pour prendre des photos."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
+          }
         }
       ]
     ],
