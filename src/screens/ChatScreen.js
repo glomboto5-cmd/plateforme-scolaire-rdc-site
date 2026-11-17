@@ -9,7 +9,8 @@ import { useApp } from '../AppContext';
 import { ActionSheet, Avatar, Input, Button } from '../components/ui';
 import { loadConversation } from '../lib/chat';
 import { signedUrl, uploadFile } from '../lib/upload';
-import { startCall, joinMeeting } from '../lib/calls';
+import { startCall } from '../lib/calls';
+import { startMeeting, joinMeeting } from '../lib/meeting';
 import { PLATFORMS, socialUrl } from './SocialScreen';
 
 const PRESETS = [
@@ -230,8 +231,8 @@ export default function ChatScreen({ route, navigation }) {
               <Pressable
                 onPress={() =>
                   Alert.alert(L('Réunion internationale', 'International meeting'), L('Démarrer une réunion avec les membres du groupe ?', 'Start a meeting with the group?'), [
-                    { text: L('Vidéo', 'Video'), onPress: () => startCall(navigation, conv, 'video', userId) },
-                    { text: L('Audio', 'Audio'), onPress: () => startCall(navigation, conv, 'audio', userId) },
+                    { text: L('Vidéo', 'Video'), onPress: () => startMeeting(navigation, conv, 'video', userId) },
+                    { text: L('Audio', 'Audio'), onPress: () => startMeeting(navigation, conv, 'audio', userId) },
                     { text: L('Annuler', 'Cancel'), style: 'cancel' },
                   ])
                 }

@@ -8,7 +8,7 @@ import { L } from '../lib/i18n';
 import { useApp } from '../AppContext';
 import { Avatar } from '../components/ui';
 import { avatarUri } from '../lib/chat';
-import { MEETING_MAX } from '../lib/calls';
+import { MEETING_MAX } from '../lib/meeting';
 
 // Réunion internationale (points 17 à 21) : chaque participant est relié directement aux autres (maillage WebRTC).
 function iceServers() {
