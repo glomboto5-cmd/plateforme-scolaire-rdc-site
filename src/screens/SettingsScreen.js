@@ -84,7 +84,7 @@ export default function SettingsScreen({ navigation }) {
       <Item icon="🤝" title={L('Inviter une personne', 'Invite a friend')} onPress={() => Share.share({ message: invitationText(profile && profile.display_name) })} />
       <Item icon="⬆️" title={L("Mises à jour de l'application", 'App updates')} sub={L('Télécharger la dernière version', 'Download the latest version')} onPress={() => Linking.openURL(UPDATE_URL)} />
 
-      <Muted style={{ textAlign: 'center', padding: 24 }}>Ange chat + · v2.2.0</Muted>
+      <Muted style={{ textAlign: 'center', padding: 24 }}>Ange chat + · v2.3.0</Muted>
     </ScrollView>
   );
 }

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ange chat +",
     "slug": "unichat-plus",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -22,7 +22,7 @@
     },
     "android": {
       "package": "com.unichatplus.app",
-      "versionCode": 24,
+      "versionCode": 25,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0E7C66"
@@ -91,6 +91,9 @@
     "extra": {
       "supabaseUrl": "https://yjfkghrfiwwbtfguovjw.supabase.co",
       "supabaseKey": "sb_publishable_eo1GTfEFLqu38r1rIxLNxg_n48EHA0O"
+    },
+    "experiments": {
+      "baseUrl": "/plateforme-scolaire-rdc-site/ange-chat"
     }
   }
 }

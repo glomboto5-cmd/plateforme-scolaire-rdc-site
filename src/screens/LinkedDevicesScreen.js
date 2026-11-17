@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Modal, Platform, Pressable, ScrollView, Share, Text, TextInput, View } from 'react-native';
+
+export const WEB_URL = 'https://glomboto5-cmd.github.io/plateforme-scolaire-rdc-site/ange-chat/';
 import { useFocusEffect } from '@react-navigation/native';
 import { supabase, errText } from '../lib/supabase';
 import { L, t } from '../lib/i18n';
@@ -104,6 +106,13 @@ export default function LinkedDevicesScreen({ route, navigation }) {
       <Pressable onPress={() => (canScan ? setScan(true) : setManual(true))} disabled={busy} style={{ marginHorizontal: 20, marginTop: 30, backgroundColor: colors.brand, borderRadius: 28, paddingVertical: 15, alignItems: 'center', opacity: busy ? 0.6 : 1 }}>
         {busy ? <ActivityIndicator color="#fff" /> : <Text style={{ color: '#fff', fontSize: 17, fontWeight: '700' }}>{L('Connecter un appareil', 'Link a device')}</Text>}
       </Pressable>
+      <View style={{ marginHorizontal: 20, marginTop: 8, padding: 14, borderRadius: 14, backgroundColor: colors.bgAlt }}>
+        <Text style={{ color: colors.text, fontWeight: '700' }}>💻 {L('Sur un ordinateur (Windows, Mac) ou une tablette', 'On a computer or tablet')}</Text>
+        <Muted style={{ marginTop: 4 }}>{L('Ouvrez cette adresse dans le navigateur, puis touchez « Se connecter avec le téléphone » :', 'Open this address, then tap “Log in with your phone”:')}</Muted>
+        <Pressable onPress={() => Share.share({ message: WEB_URL })}>
+          <Text style={{ color: colors.primary, fontWeight: '700', marginTop: 4 }} selectable>{WEB_URL}</Text>
+        </Pressable>
+      </View>
       <Pressable onPress={() => setManual(true)} style={{ alignItems: 'center', padding: 12 }}>
         <Text style={{ color: colors.primary, fontWeight: '700' }}>{L('Saisir le code à la place', 'Enter code instead')}</Text>
       </Pressable>
