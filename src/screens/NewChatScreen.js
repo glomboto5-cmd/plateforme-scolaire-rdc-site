@@ -123,8 +123,8 @@ export default function NewChatScreen({ navigation }) {
         { label: '✉️  ' + L('Envoyer un SMS', 'Send SMS'), onPress: () => sendSms(c.phone) },
         { label: '📞  ' + L('Appeler (réseau téléphonique)', 'Phone call'), onPress: () => Linking.openURL('tel:' + c.phone) },
         { label: '🟢  ' + L('Écrire sur WhatsApp / WhatsApp Business', 'Message on WhatsApp'), onPress: () => openWhatsAppChat(c.phone) },
-        { label: '🤝  ' + L('Inviter sur Angechat par SMS', 'Invite by SMS'), onPress: () => sendSms(c.phone, invitationText(myName)) },
-        { label: '🤝  ' + L('Inviter sur Angechat par WhatsApp', 'Invite by WhatsApp'), onPress: () => openWhatsAppChat(c.phone, invitationText(myName)) },
+        { label: '🤝  ' + L('Inviter sur Angechat + par SMS', 'Invite by SMS'), onPress: () => sendSms(c.phone, invitationText(myName)) },
+        { label: '🤝  ' + L('Inviter sur Angechat + par WhatsApp', 'Invite by WhatsApp'), onPress: () => openWhatsAppChat(c.phone, invitationText(myName)) },
       ],
     });
 
@@ -136,20 +136,20 @@ export default function NewChatScreen({ navigation }) {
   phone.list.forEach((c) => c.profile && !registered[c.profile.id] && (registered[c.profile.id] = { key: 'u' + c.profile.id, name: c.name, profile: c.profile, phone: c.phone, photo: c.photo }));
   if (searching) results.forEach((p) => !registered[p.id] && (registered[p.id] = { key: 'u' + p.id, name: p.display_name, profile: p }));
   const match = (x) => !needle || String(x.name || '').toLowerCase().includes(needle) || String(x.phone || '').includes(needle.replace(/\s/g, ''));
-  const onAngechat = Object.values(registered).filter((x) => x.profile.id !== userId).filter((x) => searching ? true : match(x)).sort((a, b) => a.name.localeCompare(b.name));
+  const onUnichat = Object.values(registered).filter((x) => x.profile.id !== userId).filter((x) => searching ? true : match(x)).sort((a, b) => a.name.localeCompare(b.name));
   const notReg = phone.list.filter((c) => !c.profile).filter(match);
   const onWhatsApp = notReg.filter((c) => c.whatsapp || c.business);
   const others = notReg.filter((c) => !(c.whatsapp || c.business));
 
   const rows = [
-    { kind: 'section', key: 's1', title: L('Contacts sur Angechat', 'Contacts on Angechat') },
-    ...(onAngechat.length ? onAngechat.map((x) => ({ kind: 'user', key: x.key, item: x })) : [{ kind: 'empty', key: 'e1' }]),
+    { kind: 'section', key: 's1', title: L('Contacts sur Angechat +', 'Contacts on Angechat +') },
+    ...(onUnichat.length ? onUnichat.map((x) => ({ kind: 'user', key: x.key, item: x })) : [{ kind: 'empty', key: 'e1' }]),
     ...(onWhatsApp.length ? [{ kind: 'section', key: 's-wa', title: L('Contacts sur WhatsApp', 'Contacts on WhatsApp') + ' (' + onWhatsApp.length + ')' }] : []),
     ...onWhatsApp.map((c) => ({ kind: 'phone', key: 'w' + c.phone, item: c })),
     ...(others.length && phone.waAvailable && !phone.showOthers && !searching
       ? [{ kind: 'more', key: 's-more', count: others.length }]
       : [
-          ...(others.length ? [{ kind: 'section', key: 's2', title: (phone.waAvailable ? L('Autres contacts du téléphone', 'Other phone contacts') : L('Inviter sur Angechat', 'Invite to Angechat')) + ' (' + others.length + ')' }] : []),
+          ...(others.length ? [{ kind: 'section', key: 's2', title: (phone.waAvailable ? L('Autres contacts du téléphone', 'Other phone contacts') : L('Inviter sur Angechat +', 'Invite to Angechat +')) + ' (' + others.length + ')' }] : []),
           ...others.map((c) => ({ kind: 'phone', key: 'p' + c.phone, item: c })),
         ]),
   ];

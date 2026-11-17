@@ -80,7 +80,7 @@ export default function NewGroupScreen({ navigation, route }) {
     const out = [];
     if (results.length) out.push({ title: L('Résultats', 'Results'), data: pick(results) });
     out.push({ title: L('Contacts fréquents', 'Frequent contacts'), data: pick(frequent) });
-    out.push({ title: L('Contacts sur Angechat', 'Contacts on Angechat'), data: pick(saved) });
+    out.push({ title: L('Contacts sur Angechat +', 'Contacts on Angechat +'), data: pick(saved) });
     out.push({ title: phone.waAvailable ? L('Contacts sur WhatsApp', 'Contacts on WhatsApp') : L('Contacts du téléphone', 'Phone contacts'), data: pick(waContacts) });
     return out.filter((s) => s.data.length);
   }, [results, frequent, saved, waContacts, needle]);
@@ -102,8 +102,8 @@ export default function NewGroupScreen({ navigation, route }) {
     if (!code) return;
     await Share.share({
       message: L(
-        `Rejoignez le groupe « ${name} » sur Angechat : unichatplus://join/${code}\nCode : ${code}\nTéléchargez l'application : https://github.com/glomboto5-cmd/plateforme-scolaire-rdc-site/releases/download/unichat-apk/unichat-plus-leger.apk`,
-        `Join "${name}" on Angechat: unichatplus://join/${code}`
+        `Rejoignez le groupe « ${name} » sur Angechat + : unichatplus://join/${code}\nCode : ${code}\nTéléchargez l'application : https://github.com/glomboto5-cmd/plateforme-scolaire-rdc-site/releases/download/unichat-apk/unichat-plus-leger.apk`,
+        `Join "${name}" on Angechat +: unichatplus://join/${code}`
       ),
     });
   };
@@ -143,7 +143,7 @@ export default function NewGroupScreen({ navigation, route }) {
           </View>
           {externals.length ? (
             <Muted style={{ fontSize: 13 }}>
-              {L(`${externals.length} contact(s) ne sont pas encore sur Angechat : un lien d'invitation au groupe sera partagé après la création.`, 'Non-registered contacts will receive an invite link.')}
+              {L(`${externals.length} contact(s) ne sont pas encore sur Angechat + : un lien d'invitation au groupe sera partagé après la création.`, 'Non-registered contacts will receive an invite link.')}
             </Muted>
           ) : null}
         </ScrollView>

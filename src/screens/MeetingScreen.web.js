@@ -15,7 +15,7 @@ export default function MeetingScreen({ route, navigation }) {
     <View style={{ flex: 1, backgroundColor: '#0B141A', alignItems: 'center', justifyContent: 'center', padding: 30 }}>
       <Text style={{ fontSize: 50 }}>📱</Text>
       <Text style={{ color: '#fff', fontSize: 18, textAlign: 'center', marginTop: 16 }}>
-        {L("Les réunions internationales se font depuis l'application Android Angechat.", 'Calls are available in the Android app.')}
+        {L("Les réunions internationales se font depuis l'application Android Angechat +.", 'Calls are available in the Android app.')}
       </Text>
       <Pressable onPress={() => navigation.goBack()} style={{ marginTop: 24, backgroundColor: '#1DAA61', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 22 }}>
         <Text style={{ color: '#fff', fontWeight: '700' }}>{L('Retour', 'Back')}</Text>

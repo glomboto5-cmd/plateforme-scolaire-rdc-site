@@ -117,7 +117,7 @@ export default function StatusScreen({ navigation }) {
           !loading ? (
             <Muted style={{ padding: 16 }}>
               {L(
-                "Aucun statut pour l'instant. Les statuts de vos contacts inscrits sur Angechat apparaîtront ici pendant 24 heures.",
+                "Aucun statut pour l'instant. Les statuts de vos contacts inscrits sur Angechat + apparaîtront ici pendant 24 heures.",
                 'No updates yet. Your contacts’ statuses appear here for 24 hours.'
               )}
             </Muted>

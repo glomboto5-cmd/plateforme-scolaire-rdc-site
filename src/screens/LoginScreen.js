@@ -45,7 +45,7 @@ export default function LoginScreen() {
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 24 }} keyboardShouldPersistTaps="handled">
         <View style={{ alignItems: 'center', marginBottom: 28 }}>
           <Image source={require('../../assets/icon.png')} style={{ width: 88, height: 88, borderRadius: 22 }} />
-          <Text style={{ color: colors.text, fontSize: 28, fontWeight: '800', marginTop: 14 }}>Angechat</Text>
+          <Text style={{ color: colors.text, fontSize: 28, fontWeight: '800', marginTop: 14 }}>Angechat +</Text>
           <Muted style={{ textAlign: 'center', marginTop: 6 }}>{t('tagline')}</Muted>
         </View>
 

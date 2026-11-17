@@ -1,4 +1,4 @@
-name: Angechat — APK Android
+name: Angechat + — APK Android
 
 on:
   push:
@@ -75,6 +75,6 @@ jobs:
           gh release delete unichat-apk --yes --cleanup-tag || true
           gh release create unichat-apk unichat-plus.apk unichat-plus-leger.apk $(ls unichat-plus-web.zip 2>/dev/null) \
             --target "${GITHUB_SHA}" \
-            --title "Angechat — APK Android (version ${{ github.run_number }})" \
-            --notes "Application Android Angechat, générée automatiquement. Téléchargez unichat-plus.apk puis ouvrez-le sur votre téléphone (autorisez l'installation d'applications inconnues)." \
+            --title "Angechat + — APK Android (version ${{ github.run_number }})" \
+            --notes "Application Android Angechat +, générée automatiquement. Téléchargez unichat-plus.apk puis ouvrez-le sur votre téléphone (autorisez l'installation d'applications inconnues)." \
             --prerelease

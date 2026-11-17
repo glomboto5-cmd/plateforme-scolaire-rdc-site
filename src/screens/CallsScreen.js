@@ -102,13 +102,13 @@ export default function CallsScreen({ navigation }) {
     startCall(navigation, conv, media, userId);
   };
 
-  const dialAngechat = async (media) => {
+  const dialUnichat = async (media) => {
     const d = cleanPhone(dial);
     if (!/^[1-9]\d{7,14}$/.test(d)) return Alert.alert(t('error'), L('Numéro invalide. Exemple : +243812345678', 'Invalid number'));
     const { data, error } = await supabase.rpc('match_phone_contacts', { p_phones: ['+' + d] });
     if (error) return Alert.alert(t('error'), errText(error));
     if (!data || !data.length) {
-      return Alert.alert(L('Pas sur Angechat', 'Not on Angechat'), L('Ce numéro n’est pas inscrit sur Angechat. Vous pouvez faire un appel téléphonique normal.', 'This number is not on Angechat.'), [
+      return Alert.alert(L('Pas sur Angechat +', 'Not on Angechat +'), L('Ce numéro n’est pas inscrit sur Angechat +. Vous pouvez faire un appel téléphonique normal.', 'This number is not on Angechat +.'), [
         { text: t('cancel'), style: 'cancel' },
         { text: L('Appel téléphonique', 'Phone call'), onPress: () => Linking.openURL('tel:+' + d) },
       ]);
@@ -356,11 +356,11 @@ export default function CallsScreen({ navigation }) {
             ))}
           </View>
           <View style={{ flexDirection: 'row', gap: 10, marginTop: 22, marginBottom: 10 }}>
-            <Pressable onPress={() => dialAngechat('audio')} style={{ flex: 1, backgroundColor: colors.brand, borderRadius: 30, paddingVertical: 16, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontWeight: '700' }}>📞 Angechat</Text>
+            <Pressable onPress={() => dialUnichat('audio')} style={{ flex: 1, backgroundColor: colors.brand, borderRadius: 30, paddingVertical: 16, alignItems: 'center' }}>
+              <Text style={{ color: '#fff', fontWeight: '700' }}>📞 Angechat +</Text>
             </Pressable>
-            <Pressable onPress={() => dialAngechat('video')} style={{ flex: 1, backgroundColor: colors.brand, borderRadius: 30, paddingVertical: 16, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontWeight: '700' }}>📹 Angechat</Text>
+            <Pressable onPress={() => dialUnichat('video')} style={{ flex: 1, backgroundColor: colors.brand, borderRadius: 30, paddingVertical: 16, alignItems: 'center' }}>
+              <Text style={{ color: '#fff', fontWeight: '700' }}>📹 Angechat +</Text>
             </Pressable>
           </View>
           <Pressable onPress={() => dial && Linking.openURL('tel:' + dial)} style={{ borderWidth: 1, borderColor: colors.primary, borderRadius: 30, paddingVertical: 14, alignItems: 'center', marginBottom: 20 }}>
