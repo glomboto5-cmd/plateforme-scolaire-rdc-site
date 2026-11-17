@@ -1,4 +1,4 @@
-name: Angechat + — APK Android
+name: Ange chat + — APK Android
 
 on:
   push:
@@ -39,7 +39,7 @@ jobs:
           npx expo export --platform web --output-dir web-dist
           cp assets/icon.png web-dist/icon.png || true
           printf '/*    /index.html   200\n' > web-dist/_redirects
-          cd web-dist && zip -qr ../unichat-plus-web.zip . && cd .. && ls -la unichat-plus-web.zip
+          cd web-dist && zip -qr ../ange-chat-plus-web.zip . && cd .. && ls -la ange-chat-plus-web.zip
 
       - name: Générer le projet Android
         run: npx expo prebuild --platform android --no-install
@@ -50,7 +50,7 @@ jobs:
           cd android && ./gradlew assembleRelease --no-daemon
 
       - name: Renommer l'APK
-        run: cp android/app/build/outputs/apk/release/app-release.apk unichat-plus.apk
+        run: cp android/app/build/outputs/apk/release/app-release.apk ange-chat-plus.apk
 
       - name: Compiler la version légère (téléphones récents, 64 bits)
         run: |
@@ -58,23 +58,23 @@ jobs:
           cd android && ./gradlew assembleRelease --no-daemon
 
       - name: Renommer la version légère
-        run: cp android/app/build/outputs/apk/release/app-release.apk unichat-plus-leger.apk && ls -la *.apk
+        run: cp android/app/build/outputs/apk/release/app-release.apk ange-chat-plus-leger.apk && ls -la *.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: unichat-plus-apk
+          name: ange-chat-plus-apk
           path: |
             *.apk
-            unichat-plus-web.zip
+            ange-chat-plus-web.zip
           if-no-files-found: warn
 
       - name: Publier l'APK (lien de téléchargement)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete unichat-apk --yes --cleanup-tag || true
-          gh release create unichat-apk unichat-plus.apk unichat-plus-leger.apk $(ls unichat-plus-web.zip 2>/dev/null) \
+          gh release delete ange-chat-apk --yes --cleanup-tag || true
+          gh release create ange-chat-apk ange-chat-plus.apk ange-chat-plus-leger.apk $(ls ange-chat-plus-web.zip 2>/dev/null) \
             --target "${GITHUB_SHA}" \
-            --title "Angechat + — APK Android (version ${{ github.run_number }})" \
-            --notes "Application Android Angechat +, générée automatiquement. Téléchargez unichat-plus.apk puis ouvrez-le sur votre téléphone (autorisez l'installation d'applications inconnues)." \
+            --title "Ange chat + — APK Android (version ${{ github.run_number }})" \
+            --notes "Application Android Ange chat +, générée automatiquement. Téléchargez ange-chat-plus.apk puis ouvrez-le sur votre téléphone (autorisez l'installation d'applications inconnues)." \
             --prerelease

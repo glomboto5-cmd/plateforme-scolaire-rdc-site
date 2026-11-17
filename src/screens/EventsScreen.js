@@ -28,7 +28,7 @@ export function EventsIntro({ visible, onContinue, onClose, colors }) {
           <View style={{ alignSelf: 'center', width: 40, height: 4, borderRadius: 2, backgroundColor: colors.border, marginBottom: 18 }} />
           <Text style={{ fontSize: 70, textAlign: 'center' }}>📅</Text>
           <Text style={{ color: colors.text, fontSize: 26, textAlign: 'center', marginTop: 10 }}>{L('Événements que vous pouvez partager avec tout le monde', 'Events you can share with anyone')}</Text>
-          <Line icon="🔗" title={L('Obtenez un lien à partager', 'Get a link to share')} text={L("Envoyez une invitation aux personnes invitées, même si elles ne sont pas sur Angechat +.", 'Invite people even if they are not on Angechat +.')} />
+          <Line icon="🔗" title={L('Obtenez un lien à partager', 'Get a link to share')} text={L("Envoyez une invitation aux personnes invitées, même si elles ne sont pas sur Ange chat +.", 'Invite people even if they are not on Ange chat +.')} />
           <Line icon="🗓️" title={L('Tout se fait au même endroit', 'All in one place')} text={L('Trouvez les événements que vous organisez ou auxquels vous êtes invité·e dans Événements.', 'Find your events in Events.')} />
           <Muted style={{ textAlign: 'center', marginTop: 22, fontSize: 13 }}>
             {L("Les invité·es peuvent voir les informations de l'événement. Vos messages et appels personnels restent privés.", 'Guests can see event details.')}
@@ -91,7 +91,7 @@ export default function EventsScreen({ navigation }) {
               <Text style={{ fontSize: 70, textAlign: 'center' }}>📅</Text>
               <Text style={{ color: colors.text, fontSize: 24, textAlign: 'center', marginTop: 10 }}>{L('Événements que vous pouvez partager avec tout le monde', 'Events you can share with anyone')}</Text>
               {[
-                ['🔗', L('Obtenez un lien à partager', 'Get a link to share'), L('Envoyez une invitation aux personnes invitées, même si elles ne sont pas sur Angechat +.', 'Invite people even if they are not on Angechat +.')],
+                ['🔗', L('Obtenez un lien à partager', 'Get a link to share'), L('Envoyez une invitation aux personnes invitées, même si elles ne sont pas sur Ange chat +.', 'Invite people even if they are not on Ange chat +.')],
                 ['🗓️', L('Tout se fait au même endroit', 'All in one place'), L('Trouvez les événements que vous organisez ou auxquels vous êtes invité·e dans Événements.', 'Find your events in Events.')],
               ].map(([icon, title, text]) => (
                 <View key={icon} style={{ flexDirection: 'row', gap: 16, marginTop: 18 }}>

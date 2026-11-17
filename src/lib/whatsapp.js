@@ -19,7 +19,7 @@ export function isValidPhone(raw) {
 
 export function invitationText(name) {
   return (
-    (name ? name + ' vous invite sur Angechat + ' : 'Rejoignez-moi sur Angechat + ') +
+    (name ? name + ' vous invite sur Ange chat + ' : 'Rejoignez-moi sur Ange chat + ') +
     '— messagerie, groupes et boutique en une seule application.\n' +
     'Télécharger : https://github.com/glomboto5-cmd/plateforme-scolaire-rdc-site/releases/download/unichat-apk/unichat-plus-leger.apk'
   );

@@ -126,7 +126,7 @@ export default function ChatsScreen({ navigation }) {
     <View style={{ flex: 1, backgroundColor: colors.bg, paddingTop: insets.top }}>
       {/* En-tête */}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 10, paddingBottom: 6 }}>
-        <Text style={{ flex: 1, color: colors.brand, fontSize: 26, fontWeight: '800' }}>Angechat +</Text>
+        <Text style={{ flex: 1, color: colors.brand, fontSize: 26, fontWeight: '800' }}>Ange chat +</Text>
         <Pressable onPress={() => navigation.navigate('Notifications')} hitSlop={10} style={{ paddingHorizontal: 10 }}>
           <Text style={{ fontSize: 22, color: colors.text }}>🔔</Text>
           {unreadNotif > 0 ? (

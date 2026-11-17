@@ -102,7 +102,7 @@ export default function GroupInfoScreen({ route, navigation }) {
   const linkUrl = (code) => `unichatplus://join/${code}`;
 
   const shareLink = (l) =>
-    Share.share({ message: `${t('inviteLink')} « ${conv.title} » — Angechat +\n${linkUrl(l.code)}\nCode : ${l.code}` });
+    Share.share({ message: `${t('inviteLink')} « ${conv.title} » — Ange chat +\n${linkUrl(l.code)}\nCode : ${l.code}` });
 
   const leave = () =>
     Alert.alert(t('leaveGroup'), t('confirmLeave'), [
@@ -191,7 +191,7 @@ export default function GroupInfoScreen({ route, navigation }) {
               </Muted>
               <View style={{ flexDirection: 'row', gap: 16 }}>
                 <Pressable onPress={() => shareLink(l)}><Text style={{ color: colors.primary, fontWeight: '600' }}>{t('share')}</Text></Pressable>
-                <Pressable onPress={() => shareOnWhatsApp(`${t('inviteLink')} « ${conv.title} » — Angechat +\nCode : ${l.code}\n${invitationText()}`)}><Text style={{ color: '#25D366', fontWeight: '700' }}>{t('shareWhatsApp')}</Text></Pressable>
+                <Pressable onPress={() => shareOnWhatsApp(`${t('inviteLink')} « ${conv.title} » — Ange chat +\nCode : ${l.code}\n${invitationText()}`)}><Text style={{ color: '#25D366', fontWeight: '700' }}>{t('shareWhatsApp')}</Text></Pressable>
                 <Pressable onPress={() => Clipboard.setStringAsync(l.code)}><Text style={{ color: colors.primary, fontWeight: '600' }}>{t('copy')}</Text></Pressable>
                 <Pressable onPress={() => call('revoke_invite_link', { p_link: l.id })}><Text style={{ color: colors.danger, fontWeight: '600' }}>{t('revoke')}</Text></Pressable>
               </View>

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Angechat +",
+    "name": "Ange chat +",
     "slug": "unichat-plus",
-    "version": "1.9.1",
+    "version": "1.9.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -17,12 +17,12 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.unichatplus.app",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "Angechat + utilise le micro pour les appels."
+        "NSMicrophoneUsageDescription": "Ange chat + utilise le micro pour les appels."
       }
     },
     "android": {
       "package": "com.unichatplus.app",
-      "versionCode": 19,
+      "versionCode": 20,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0E7C66"
@@ -43,8 +43,8 @@
     "web": {
       "bundler": "metro",
       "output": "single",
-      "name": "Angechat +",
-      "shortName": "Angechat +",
+      "name": "Ange chat +",
+      "shortName": "Ange chat +",
       "themeColor": "#0E7C66",
       "backgroundColor": "#FFFFFF",
       "favicon": "./assets/icon.png",
@@ -55,14 +55,14 @@
       [
         "expo-contacts",
         {
-          "contactsPermission": "Angechat + affiche vos contacts pour vous permettre de leur écrire ou de les inviter."
+          "contactsPermission": "Ange chat + affiche vos contacts pour vous permettre de leur écrire ou de les inviter."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Angechat + a besoin d'accéder à vos photos pour les partager.",
-          "cameraPermission": "Angechat + a besoin de la caméra pour prendre des photos."
+          "photosPermission": "Ange chat + a besoin d'accéder à vos photos pour les partager.",
+          "cameraPermission": "Ange chat + a besoin de la caméra pour prendre des photos."
         }
       ],
       [
@@ -77,8 +77,8 @@
       [
         "@config-plugins/react-native-webrtc",
         {
-          "cameraPermission": "Angechat + utilise la caméra pour les appels vidéo.",
-          "microphonePermission": "Angechat + utilise le micro pour les appels."
+          "cameraPermission": "Ange chat + utilise la caméra pour les appels vidéo.",
+          "microphonePermission": "Ange chat + utilise le micro pour les appels."
         }
       ]
     ],

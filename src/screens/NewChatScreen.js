@@ -123,8 +123,8 @@ export default function NewChatScreen({ navigation }) {
         { label: '✉️  ' + L('Envoyer un SMS', 'Send SMS'), onPress: () => sendSms(c.phone) },
         { label: '📞  ' + L('Appeler (réseau téléphonique)', 'Phone call'), onPress: () => Linking.openURL('tel:' + c.phone) },
         { label: '🟢  ' + L('Écrire sur WhatsApp / WhatsApp Business', 'Message on WhatsApp'), onPress: () => openWhatsAppChat(c.phone) },
-        { label: '🤝  ' + L('Inviter sur Angechat + par SMS', 'Invite by SMS'), onPress: () => sendSms(c.phone, invitationText(myName)) },
-        { label: '🤝  ' + L('Inviter sur Angechat + par WhatsApp', 'Invite by WhatsApp'), onPress: () => openWhatsAppChat(c.phone, invitationText(myName)) },
+        { label: '🤝  ' + L('Inviter sur Ange chat + par SMS', 'Invite by SMS'), onPress: () => sendSms(c.phone, invitationText(myName)) },
+        { label: '🤝  ' + L('Inviter sur Ange chat + par WhatsApp', 'Invite by WhatsApp'), onPress: () => openWhatsAppChat(c.phone, invitationText(myName)) },
       ],
     });
 
@@ -142,14 +142,14 @@ export default function NewChatScreen({ navigation }) {
   const others = notReg.filter((c) => !(c.whatsapp || c.business));
 
   const rows = [
-    { kind: 'section', key: 's1', title: L('Contacts sur Angechat +', 'Contacts on Angechat +') },
+    { kind: 'section', key: 's1', title: L('Contacts sur Ange chat +', 'Contacts on Ange chat +') },
     ...(onUnichat.length ? onUnichat.map((x) => ({ kind: 'user', key: x.key, item: x })) : [{ kind: 'empty', key: 'e1' }]),
     ...(onWhatsApp.length ? [{ kind: 'section', key: 's-wa', title: L('Contacts sur WhatsApp', 'Contacts on WhatsApp') + ' (' + onWhatsApp.length + ')' }] : []),
     ...onWhatsApp.map((c) => ({ kind: 'phone', key: 'w' + c.phone, item: c })),
     ...(others.length && phone.waAvailable && !phone.showOthers && !searching
       ? [{ kind: 'more', key: 's-more', count: others.length }]
       : [
-          ...(others.length ? [{ kind: 'section', key: 's2', title: (phone.waAvailable ? L('Autres contacts du téléphone', 'Other phone contacts') : L('Inviter sur Angechat +', 'Invite to Angechat +')) + ' (' + others.length + ')' }] : []),
+          ...(others.length ? [{ kind: 'section', key: 's2', title: (phone.waAvailable ? L('Autres contacts du téléphone', 'Other phone contacts') : L('Inviter sur Ange chat +', 'Invite to Ange chat +')) + ' (' + others.length + ')' }] : []),
           ...others.map((c) => ({ kind: 'phone', key: 'p' + c.phone, item: c })),
         ]),
   ];
