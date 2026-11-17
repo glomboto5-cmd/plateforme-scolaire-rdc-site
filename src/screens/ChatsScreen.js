@@ -154,11 +154,6 @@ export default function ChatsScreen({ navigation }) {
           !loading ? (
             <View style={{ padding: 40, alignItems: 'center', gap: 16 }}>
               <Muted style={{ textAlign: 'center' }}>{filter === 'all' && !q ? t('noChats') : t('noResults')}</Muted>
-              {filter === 'all' && !q ? (
-                <Pressable onPress={() => shareOnWhatsApp(invitationText(profile && profile.display_name))} style={{ backgroundColor: colors.brand, paddingHorizontal: 18, paddingVertical: 12, borderRadius: 22 }}>
-                  <Text style={{ color: '#fff', fontWeight: '700' }}>🟢 {t('inviteWhatsApp')}</Text>
-                </Pressable>
-              ) : null}
             </View>
           ) : null
         }
