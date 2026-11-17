@@ -1,20 +1,31 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, FlatList, Pressable, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { Alert, FlatList, Linking, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import * as Contacts from 'expo-contacts';
 import { supabase, errText } from '../lib/supabase';
-import { t } from '../lib/i18n';
+import { L, t } from '../lib/i18n';
 import { useApp } from '../AppContext';
-import { Avatar, Input, Muted, Row, SectionTitle, Title } from '../components/ui';
+import { ActionSheet, Avatar, Input, Muted, Title } from '../components/ui';
 import { avatarUri, searchProfiles, PROFILE_FIELDS } from '../lib/chat';
-import { invitationText, isValidPhone, openWhatsAppChat, shareOnWhatsApp } from '../lib/whatsapp';
+import { invitationText, isValidPhone, openWhatsAppChat, shareOnWhatsApp, cleanPhone } from '../lib/whatsapp';
 import { loadPhoneContacts } from '../lib/phoneContacts';
+
+function sendSms(phone, text) {
+  const sep = Platform.OS === 'ios' ? '&' : '?';
+  return Linking.openURL('sms:' + phone + (text ? sep + 'body=' + encodeURIComponent(text) : ''));
+}
 
 export default function NewChatScreen({ navigation }) {
   const { colors, userId, profile } = useApp();
   const [q, setQ] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
   const [results, setResults] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [invites, setInvites] = useState([]);
+  const [waOpen, setWaOpen] = useState(false);
   const [waPhone, setWaPhone] = useState('');
+  const [sheet, setSheet] = useState(null);
+  const [phone, setPhone] = useState({ loading: true, granted: true, list: [] });
+  const myName = profile && profile.display_name;
 
   const loadSide = useCallback(async () => {
     const [{ data: c }, { data: inv }] = await Promise.all([
@@ -35,22 +46,54 @@ export default function NewChatScreen({ navigation }) {
     setInvites(inv || []);
   }, [userId]);
 
-  useEffect(() => { loadSide(); }, [loadSide]);
-
-  // Contacts du téléphone (les mêmes que dans WhatsApp)
-  const [phone, setPhone] = useState({ loading: true, granted: true, list: [] });
-  useEffect(() => {
-    let alive = true;
+  const loadPhone = useCallback(() => {
     loadPhoneContacts()
-      .then((r) => alive && setPhone({ loading: false, ...r }))
-      .catch(() => alive && setPhone({ loading: false, granted: false, list: [] }));
-    return () => { alive = false; };
+      .then((r) => setPhone({ loading: false, ...r }))
+      .catch(() => setPhone({ loading: false, granted: false, list: [] }));
   }, []);
+
+  useEffect(() => { loadSide(); loadPhone(); }, [loadSide, loadPhone]);
 
   useEffect(() => {
     const h = setTimeout(async () => setResults(await searchProfiles(q, userId)), 300);
     return () => clearTimeout(h);
   }, [q, userId]);
+
+  const total = phone.list.length + contacts.length;
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <View>
+          <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>{L('Sélectionner un contact', 'Select contact')}</Text>
+          <Text style={{ color: '#E0F2EE', fontSize: 13 }}>{total} {L('contacts', 'contacts')}</Text>
+        </View>
+      ),
+      headerRight: () => (
+        <View style={{ flexDirection: 'row' }}>
+          <Pressable onPress={() => setSearchOpen((x) => !x)} hitSlop={10} style={{ paddingHorizontal: 10 }}>
+            <Text style={{ fontSize: 20 }}>🔍</Text>
+          </Pressable>
+          <Pressable
+            onPress={() =>
+              setSheet({
+                title: L('Options', 'Options'),
+                actions: [
+                  { label: '🔄  ' + L('Actualiser les contacts', 'Refresh contacts'), onPress: () => { setPhone((p) => ({ ...p, loading: true })); loadPhone(); loadSide(); } },
+                  { label: '🤝  ' + L('Inviter des amis', 'Invite friends'), onPress: () => shareOnWhatsApp(invitationText(myName)) },
+                  { label: '🔗  ' + L('Rejoindre un groupe avec un lien', 'Join a group by link'), onPress: () => navigation.replace('JoinGroup') },
+                ],
+              })
+            }
+            hitSlop={10}
+            style={{ paddingHorizontal: 8 }}
+          >
+            <Text style={{ color: '#fff', fontSize: 22, fontWeight: '700' }}>⋮</Text>
+          </Pressable>
+        </View>
+      ),
+    });
+  }, [navigation, total, myName]);
 
   const open = async (otherId) => {
     const { data, error } = await supabase.rpc('get_or_create_direct_conversation', { p_other: otherId });
@@ -64,139 +107,167 @@ export default function NewChatScreen({ navigation }) {
     loadSide();
   };
 
-  const searching = q.trim().length >= 2;
+  const newContact = async () => {
+    try {
+      if (Platform.OS === 'web') return;
+      await Contacts.presentFormAsync(null, { contactType: Contacts.ContactTypes.Person }, { isNew: true });
+      setPhone((p) => ({ ...p, loading: true }));
+      loadPhone();
+    } catch (e) {
+      Alert.alert(t('error'), errText(e));
+    }
+  };
+
+  const contactActions = (c) =>
+    setSheet({
+      title: c.name + ' · ' + c.phone,
+      actions: [
+        { label: '✉️  ' + L('Envoyer un SMS', 'Send SMS'), onPress: () => sendSms(c.phone) },
+        { label: '📞  ' + L('Appeler (réseau téléphonique)', 'Phone call'), onPress: () => Linking.openURL('tel:' + c.phone) },
+        { label: '🟢  ' + L('Écrire sur WhatsApp / WhatsApp Business', 'Message on WhatsApp'), onPress: () => openWhatsAppChat(c.phone) },
+        { label: '🤝  ' + L('Inviter sur Unichat + par SMS', 'Invite by SMS'), onPress: () => sendSms(c.phone, invitationText(myName)) },
+        { label: '🤝  ' + L('Inviter sur Unichat + par WhatsApp', 'Invite by WhatsApp'), onPress: () => openWhatsAppChat(c.phone, invitationText(myName)) },
+      ],
+    });
+
+  // Construction des listes
   const needle = q.trim().toLowerCase();
-  const people = searching ? results : contacts.map((c) => c.profiles).filter(Boolean);
-  const known = new Set(people.map((p) => p.id));
-  const phoneRows = phone.list
-    .filter((c) => !c.profile || !known.has(c.profile.id))
-    .filter((c) => !needle || c.name.toLowerCase().includes(needle) || c.phone.includes(needle.replace(/\s/g, '')));
+  const searching = needle.length >= 2;
+  const registered = {};
+  contacts.forEach((c) => c.profiles && (registered[c.profiles.id] = { key: 'u' + c.profiles.id, name: c.display_name || c.profiles.display_name, profile: c.profiles }));
+  phone.list.forEach((c) => c.profile && !registered[c.profile.id] && (registered[c.profile.id] = { key: 'u' + c.profile.id, name: c.name, profile: c.profile, phone: c.phone, photo: c.photo }));
+  if (searching) results.forEach((p) => !registered[p.id] && (registered[p.id] = { key: 'u' + p.id, name: p.display_name, profile: p }));
+  const match = (x) => !needle || String(x.name || '').toLowerCase().includes(needle) || String(x.phone || '').includes(needle.replace(/\s/g, ''));
+  const onUnichat = Object.values(registered).filter((x) => x.profile.id !== userId).filter((x) => searching ? true : match(x)).sort((a, b) => a.name.localeCompare(b.name));
+  const others = phone.list.filter((c) => !c.profile).filter(match);
+
   const rows = [
-    ...people.map((p) => ({ kind: 'user', key: 'u' + p.id, profile: p })),
-    ...(phoneRows.length ? [{ kind: 'header', key: 'h-phone' }] : []),
-    ...phoneRows.map((c) => ({ kind: 'phone', key: 'p' + c.phone, contact: c })),
+    { kind: 'section', key: 's1', title: L('Contacts sur Unichat +', 'Contacts on Unichat +') },
+    ...(onUnichat.length ? onUnichat.map((x) => ({ kind: 'user', key: x.key, item: x })) : [{ kind: 'empty', key: 'e1' }]),
+    ...(others.length ? [{ kind: 'section', key: 's2', title: L('Inviter sur Unichat +', 'Invite to Unichat +') }] : []),
+    ...others.map((c) => ({ kind: 'phone', key: 'p' + c.phone, item: c })),
   ];
-  const myName = profile && profile.display_name;
+
+  const Action = ({ icon, label, onPress, right }) => (
+    <Pressable onPress={onPress} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, backgroundColor: pressed ? colors.bgAlt : colors.bg })}>
+      <View style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ fontSize: 22 }}>{icon}</Text>
+      </View>
+      <Text style={{ color: colors.text, fontSize: 17, fontWeight: '600', marginLeft: 16, flex: 1 }}>{label}</Text>
+      {right}
+    </Pressable>
+  );
+
+  const Section = ({ title }) => <Text style={{ color: colors.textMuted, fontSize: 15, fontWeight: '600', paddingHorizontal: 16, paddingTop: 18, paddingBottom: 8 }}>{title}</Text>;
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <View style={{ padding: 12 }}>
-        <Input placeholder={t('searchPeople')} value={q} onChangeText={setQ} autoCapitalize="none" autoFocus />
-      </View>
+      {searchOpen ? (
+        <View style={{ padding: 10 }}>
+          <TextInput
+            value={q}
+            onChangeText={setQ}
+            autoFocus
+            placeholder={L('Rechercher un nom, un numéro ou un identifiant', 'Search name, number or handle')}
+            placeholderTextColor={colors.textMuted}
+            style={{ backgroundColor: colors.bgAlt, color: colors.text, borderRadius: 22, paddingHorizontal: 16, paddingVertical: 10, fontSize: 16 }}
+          />
+        </View>
+      ) : null}
       <FlatList
         data={rows}
         keyExtractor={(r) => r.key}
-        initialNumToRender={25}
+        initialNumToRender={30}
         keyboardShouldPersistTaps="handled"
         ListHeaderComponent={
-          <>
-            <Row onPress={() => navigation.replace('NewGroup')}>
-              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 20 }}>👥</Text>
-              </View>
-              <Title style={{ marginLeft: 12 }}>{t('newGroup')}</Title>
-            </Row>
-            <Row onPress={() => navigation.replace('JoinGroup')}>
-              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 20 }}>🔗</Text>
-              </View>
-              <Title style={{ marginLeft: 12 }}>{t('joinWithCode')}</Title>
-            </Row>
-
-            <SectionTitle>🟢 {t('whatsappSection')}</SectionTitle>
-            <View style={{ paddingHorizontal: 16, gap: 8 }}>
-              <Input placeholder={t('whatsappPhone')} value={waPhone} onChangeText={setWaPhone} keyboardType="phone-pad" />
-              <View style={{ flexDirection: 'row', gap: 8 }}>
-                <Pressable
-                  onPress={() => (isValidPhone(waPhone) ? openWhatsAppChat(waPhone) : Alert.alert(t('error'), t('phoneInvalid')))}
-                  style={{ flex: 1, backgroundColor: '#25D366', borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}
-                >
-                  <Text style={{ color: '#fff', fontWeight: '700' }}>{t('whatsappWrite')}</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() =>
-                    isValidPhone(waPhone)
-                      ? openWhatsAppChat(waPhone, invitationText(profile && profile.display_name))
-                      : shareOnWhatsApp(invitationText(profile && profile.display_name))
-                  }
-                  style={{ flex: 1, borderWidth: 1, borderColor: '#25D366', borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}
-                >
-                  <Text style={{ color: '#25D366', fontWeight: '700' }}>{t('whatsappInvite')}</Text>
-                </Pressable>
-              </View>
-              <Muted style={{ fontSize: 12 }}>{t('whatsappHint')}</Muted>
-            </View>
-
-            {invites.length > 0 && <SectionTitle>{t('invitations')}</SectionTitle>}
-            {invites.map((inv) => (
-              <View key={inv.id} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10 }}>
-                <Avatar uri={avatarUri(inv.inviter)} name={inv.inviter && inv.inviter.display_name} />
-                <View style={{ flex: 1, marginLeft: 12 }}>
-                  <Title>{inv.inviter ? inv.inviter.display_name : '?'}</Title>
-                  <Muted>{t('group')}</Muted>
+          !searching ? (
+            <>
+              <Action icon="👥" label={L('Nouveau groupe', 'New group')} onPress={() => navigation.replace('NewGroup')} />
+              <Action icon="👤" label={L('Nouveau contact', 'New contact')} onPress={newContact} />
+              <Action icon="🏘️" label={L('Nouvelle communauté', 'New community')} onPress={() => navigation.navigate('Home', { screen: 'Communities' })} />
+              <Action icon="🟢" label={L('Écrire à un numéro (WhatsApp)', 'Message a number (WhatsApp)')} onPress={() => setWaOpen((x) => !x)} />
+              {waOpen ? (
+                <View style={{ paddingHorizontal: 16, gap: 8, paddingBottom: 8 }}>
+                  <Input placeholder={t('whatsappPhone')} value={waPhone} onChangeText={setWaPhone} keyboardType="phone-pad" />
+                  <View style={{ flexDirection: 'row', gap: 8 }}>
+                    <Pressable
+                      onPress={() => (isValidPhone(waPhone) ? openWhatsAppChat(waPhone) : Alert.alert(t('error'), t('phoneInvalid')))}
+                      style={{ flex: 1, backgroundColor: '#25D366', borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}
+                    >
+                      <Text style={{ color: '#fff', fontWeight: '700' }}>{t('whatsappWrite')}</Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => (isValidPhone(waPhone) ? sendSms('+' + cleanPhone(waPhone)) : Alert.alert(t('error'), t('phoneInvalid')))}
+                      style={{ flex: 1, borderWidth: 1, borderColor: colors.primary, borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}
+                    >
+                      <Text style={{ color: colors.primary, fontWeight: '700' }}>✉️ SMS</Text>
+                    </Pressable>
+                  </View>
                 </View>
-                <Pressable onPress={() => respond(inv, true)} style={{ backgroundColor: colors.primary, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 16, marginRight: 6 }}>
-                  <Text style={{ color: '#fff', fontWeight: '600' }}>{t('accept')}</Text>
-                </Pressable>
-                <Pressable onPress={() => respond(inv, false)} style={{ paddingHorizontal: 10, paddingVertical: 8 }}>
-                  <Text style={{ color: colors.danger }}>{t('decline')}</Text>
-                </Pressable>
-              </View>
-            ))}
-            <SectionTitle>{searching ? t('search') : t('onUnichat')}</SectionTitle>
-            {!people.length ? <Muted style={{ paddingHorizontal: 16, paddingBottom: 6 }}>{searching ? t('noResults') : t('newChatHint')}</Muted> : null}
-          </>
+              ) : null}
+
+              {invites.length > 0 ? <Section title={t('invitations')} /> : null}
+              {invites.map((inv) => (
+                <View key={inv.id} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10 }}>
+                  <Avatar uri={avatarUri(inv.inviter)} name={inv.inviter && inv.inviter.display_name} size={50} />
+                  <View style={{ flex: 1, marginLeft: 14 }}>
+                    <Title>{inv.inviter ? inv.inviter.display_name : '?'}</Title>
+                    <Muted>{L('vous invite dans un groupe', 'invited you to a group')}</Muted>
+                  </View>
+                  <Pressable onPress={() => respond(inv, true)} style={{ backgroundColor: colors.brand, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 16, marginRight: 6 }}>
+                    <Text style={{ color: '#fff', fontWeight: '600' }}>{t('accept')}</Text>
+                  </Pressable>
+                  <Pressable onPress={() => respond(inv, false)} style={{ paddingHorizontal: 8, paddingVertical: 8 }}>
+                    <Text style={{ color: colors.danger }}>{t('decline')}</Text>
+                  </Pressable>
+                </View>
+              ))}
+            </>
+          ) : null
         }
         ListFooterComponent={
           phone.loading ? (
             <Muted style={{ padding: 16 }}>{t('phoneLoading')}</Muted>
           ) : !phone.granted ? (
             <Muted style={{ padding: 16 }}>{t('phoneDenied')}</Muted>
-          ) : <View style={{ height: 24 }} />
+          ) : (
+            <View style={{ height: 30 }} />
+          )
         }
-        renderItem={({ item }) => {
-          if (item.kind === 'header') return <SectionTitle>📱 {t('phoneContacts')}</SectionTitle>;
-          if (item.kind === 'user') {
-            const p = item.profile;
+        renderItem={({ item: r }) => {
+          if (r.kind === 'section') return <Section title={r.title} />;
+          if (r.kind === 'empty') {
+            return <Muted style={{ paddingHorizontal: 16, paddingBottom: 6 }}>{searching ? t('noResults') : L("Aucun de vos contacts n'est encore inscrit. Invitez-les ci-dessous.", 'None of your contacts is registered yet.')}</Muted>;
+          }
+          if (r.kind === 'user') {
+            const x = r.item;
+            const p = x.profile;
             return (
-              <Row onPress={() => open(p.id)}>
-                <Avatar uri={avatarUri(p)} name={p.display_name} />
-                <View style={{ marginLeft: 12, flex: 1 }}>
-                  <Title>{p.display_name}{p.is_business ? ' 🏪' : ''}</Title>
-                  <Muted numberOfLines={1}>@{p.handle}{p.about ? ' · ' + p.about : ''}</Muted>
+              <Pressable onPress={() => open(p.id)} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10, backgroundColor: pressed ? colors.bgAlt : colors.bg })}>
+                <Avatar uri={avatarUri(p) || x.photo} name={x.name} size={50} />
+                <View style={{ marginLeft: 14, flex: 1 }}>
+                  <Title numberOfLines={1} style={{ fontSize: 17 }}>{x.name}{p.is_business ? ' 🏪' : ''}</Title>
+                  <Muted numberOfLines={1}>{p.about || '@' + p.handle}</Muted>
                 </View>
-              </Row>
+              </Pressable>
             );
           }
-          const c = item.contact;
-          if (c.profile) {
-            return (
-              <Row onPress={() => open(c.profile.id)}>
-                <Avatar uri={avatarUri(c.profile)} name={c.name} />
-                <View style={{ marginLeft: 12, flex: 1 }}>
-                  <Title numberOfLines={1}>{c.name}</Title>
-                  <Muted numberOfLines={1}>✅ Unichat + · {c.phone}</Muted>
-                </View>
-              </Row>
-            );
-          }
+          const c = r.item;
           return (
-            <Row>
-              <Avatar name={c.name} />
-              <View style={{ marginLeft: 12, flex: 1 }}>
-                <Title numberOfLines={1}>{c.name}</Title>
+            <Pressable onPress={() => contactActions(c)} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10, backgroundColor: pressed ? colors.bgAlt : colors.bg })}>
+              <Avatar uri={c.photo} name={c.name} size={50} />
+              <View style={{ marginLeft: 14, flex: 1 }}>
+                <Title numberOfLines={1} style={{ fontSize: 17 }}>{c.name}</Title>
                 <Muted numberOfLines={1}>{c.phone}</Muted>
               </View>
-              <Pressable onPress={() => openWhatsAppChat(c.phone)} hitSlop={6} style={{ backgroundColor: '#25D366', paddingHorizontal: 10, paddingVertical: 7, borderRadius: 14, marginRight: 6 }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 12 }}>WhatsApp</Text>
+              <Pressable onPress={() => sendSms(c.phone, invitationText(myName))} hitSlop={6} style={{ paddingHorizontal: 10, paddingVertical: 6 }}>
+                <Text style={{ color: colors.brand, fontWeight: '700' }}>{t('invite')}</Text>
               </Pressable>
-              <Pressable onPress={() => openWhatsAppChat(c.phone, invitationText(myName))} hitSlop={6} style={{ borderWidth: 1, borderColor: colors.primary, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 14 }}>
-                <Text style={{ color: colors.primary, fontWeight: '700', fontSize: 12 }}>{t('invite')}</Text>
-              </Pressable>
-            </Row>
+            </Pressable>
           );
         }}
       />
+      <ActionSheet visible={!!sheet} title={sheet && sheet.title} actions={sheet && sheet.actions} onClose={() => setSheet(null)} />
     </View>
   );
 }

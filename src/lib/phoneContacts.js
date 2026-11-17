@@ -13,17 +13,22 @@ export async function loadPhoneContacts() {
   if (perm.status !== 'granted') return { granted: false, list: [] };
 
   const { data } = await Contacts.getContactsAsync({
-    fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Name],
+    fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Name, Contacts.Fields.Image, Contacts.Fields.ImageAvailable],
     sort: Contacts.SortTypes.FirstName,
   });
 
   const byPhone = {};
   (data || []).forEach((c) => {
     (c.phoneNumbers || []).forEach((p) => {
-      const d = cleanPhone(p.number);
-      if (!/^[1-9]\d{7,14}$/.test(d)) return;
+      const raw = String(p.number || '');
+      // Ignore les codes USSD (*105#…) et numéros de service trop courts
+      if (/[*#]/.test(raw)) return;
+      const d = cleanPhone(raw);
+      if (!/^[1-9]\d{8,14}$/.test(d)) return;
       const e164 = '+' + d;
-      if (!byPhone[e164]) byPhone[e164] = { key: e164, phone: e164, name: c.name || e164 };
+      if (/^[*#+\d\s()-]+$/.test(String(c.name || '')) && /[*#]/.test(String(c.name || ''))) return;
+      const photo = c.imageAvailable && c.image && c.image.uri ? c.image.uri : null;
+      if (!byPhone[e164]) byPhone[e164] = { key: e164, phone: e164, name: c.name || e164, photo };
     });
   });
   const list = Object.values(byPhone);
