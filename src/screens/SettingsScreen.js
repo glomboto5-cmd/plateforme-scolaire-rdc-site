@@ -63,6 +63,7 @@ export default function SettingsScreen({ navigation }) {
       <Item icon="🎨" title={L('Apparence', 'Appearance')} sub={L("Thème de l'application", 'App theme')} onPress={() => go('appearance')} />
       <Item icon="📅" title={L('Événements', 'Events')} sub={L('Consulter et gérer les événements', 'View and manage events')} badge={L('Nouveau', 'New')} onPress={() => navigation.navigate('Events')} />
       <Item icon="🛍️" title={L('Boutique', 'Shop')} sub={L('Catalogue, commandes, clients', 'Catalog, orders, customers')} badge={L('Nouveau', 'New')} onPress={() => navigation.navigate('Home', { screen: 'Shop' })} />
+      <Item icon="🌟" title={L('Centre Ange chat +', 'Ange chat + hub')} sub={L('WhatsApp unifié, réseaux sociaux, publicité, offres Pro, revenus', 'Unified WhatsApp, social, ads, Pro, revenue')} badge={L('Nouveau', 'New')} onPress={() => navigation.navigate('Hub')} />
       {admin ? <Item icon="📈" title={L('Tableau de bord du propriétaire', 'Owner dashboard')} sub={L('Revenus publicitaires, abonnements, transactions, validations', 'Ad revenue, subscriptions, transactions')} badge={L('Admin', 'Admin')} onPress={() => navigation.navigate('OwnerDashboard')} /> : null}
       <Item icon="📣" title={L('Publicité', 'Advertising')} sub={L('Créer et gérer vos campagnes, paiements, statistiques', 'Create and manage campaigns')} badge={L('Nouveau', 'New')} onPress={() => navigation.navigate('AdsManager')} />
       <Item icon="⭐" title={L('Offres Pro pour entreprises', 'Pro plans for businesses')} sub={L('Messagerie gratuite pour les particuliers', 'Messaging stays free for individuals')} badge={L('Nouveau', 'New')} onPress={() => navigation.navigate('BusinessPlans')} />
@@ -79,7 +80,7 @@ export default function SettingsScreen({ navigation }) {
       <Item icon="🤝" title={L('Inviter une personne', 'Invite a friend')} onPress={() => Share.share({ message: invitationText(profile && profile.display_name) })} />
       <Item icon="⬆️" title={L("Mises à jour de l'application", 'App updates')} sub={L('Télécharger la dernière version', 'Download the latest version')} onPress={() => Linking.openURL(UPDATE_URL)} />
 
-      <Muted style={{ textAlign: 'center', padding: 24 }}>Ange chat + · v2.0.0</Muted>
+      <Muted style={{ textAlign: 'center', padding: 24 }}>Ange chat + · v2.1.0</Muted>
     </ScrollView>
   );
 }

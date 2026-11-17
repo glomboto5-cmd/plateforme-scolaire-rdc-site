@@ -96,6 +96,7 @@ export default function ChatsScreen({ navigation }) {
         { label: '👥  ' + t('newGroup'), onPress: () => navigation.navigate('NewGroup') },
         { label: '🔗  ' + t('joinWithCode'), onPress: () => navigation.navigate('JoinGroup') },
         { label: '🟢  ' + t('inviteWhatsApp'), onPress: () => shareOnWhatsApp(invitationText(profile && profile.display_name)) },
+        { label: '🌟  ' + L('Centre Ange chat +', 'Ange chat + hub'), onPress: () => navigation.navigate('Hub') },
         { label: '🔔  ' + L('Notifications', 'Notifications'), onPress: () => navigation.navigate('Notifications') },
         { label: '🤖  ' + L('Réponses automatiques', 'Auto-replies'), onPress: () => navigation.navigate('Automation') },
         { label: '🌐  ' + L('Réseaux sociaux', 'Social networks'), onPress: () => navigation.navigate('Social') },
