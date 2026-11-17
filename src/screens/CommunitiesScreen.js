@@ -12,6 +12,7 @@ export default function CommunitiesScreen({ navigation, route }) {
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(false);
   const [intro, setIntro] = useState(false);
+  const [examples, setExamples] = useState(false);
   const createParam = route && route.params && route.params.create;
   React.useEffect(() => { if (createParam) setIntro(true); }, [createParam]);
   const [name, setName] = useState('');
@@ -73,7 +74,25 @@ export default function CommunitiesScreen({ navigation, route }) {
             </View>
           </Pressable>
         }
-        ListEmptyComponent={!loading ? <Muted style={{ padding: 16 }}>{L('Vous ne faites partie d’aucune communauté.', 'You are not in any community yet.')}</Muted> : null}
+        ListEmptyComponent={
+          !loading ? (
+            <View style={{ alignItems: 'center', paddingHorizontal: 24, paddingTop: 20, paddingBottom: 40 }}>
+              <View style={{ width: 240, height: 170, borderRadius: 24, backgroundColor: colors.chipActiveBg, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.text }}>
+                <Text style={{ fontSize: 64 }}>📢</Text>
+                <Text style={{ fontSize: 30, position: 'absolute', top: 14, left: 18 }}>👥</Text>
+                <Text style={{ fontSize: 30, position: 'absolute', bottom: 14, right: 18 }}>💬</Text>
+              </View>
+              <Text style={{ color: colors.text, fontSize: 24, fontWeight: '700', marginTop: 24, textAlign: 'center' }}>{L('Créer une nouvelle communauté', 'Create a new community')}</Text>
+              <Text style={{ color: colors.textMuted, fontSize: 16, textAlign: 'center', marginTop: 12, lineHeight: 23 }}>
+                {L("Rassemblez vos voisins, un groupe scolaire ou autres. Créez des groupes sur des sujets spécifiques pour les membres et en tant qu'admin, envoyez rapidement vos annonces.", 'Bring people together, create topic groups and send announcements.')}
+              </Text>
+              <Pressable onPress={() => setExamples(true)} style={{ marginTop: 16 }}>
+                <Text style={{ color: colors.primary, fontWeight: '700', fontSize: 16 }}>{L('Voir les exemples de communautés', 'See community examples')}  ›</Text>
+              </Pressable>
+              <Button title={L('Démarrer', 'Get started')} onPress={() => setForm(true)} style={{ borderRadius: 30, marginTop: 28, alignSelf: 'stretch' }} />
+            </View>
+          ) : null
+        }
         renderItem={({ item: c }) => (
           <View style={{ borderTopWidth: 8, borderTopColor: colors.bgAlt }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', padding: 16, gap: 14 }}>
@@ -122,8 +141,37 @@ export default function CommunitiesScreen({ navigation, route }) {
                 'Bring together neighbours, a school or customers. Create topic groups and send announcements as admin.'
               )}
             </Text>
+            <Pressable onPress={() => setExamples(true)} style={{ marginTop: 16 }}>
+              <Text style={{ color: colors.primary, fontWeight: '700', fontSize: 16 }}>{L('Voir les exemples de communautés', 'See community examples')}  ›</Text>
+            </Pressable>
           </View>
           <Button title={L('Démarrer', 'Get started')} onPress={() => { setIntro(false); setForm(true); }} style={{ borderRadius: 30, marginBottom: 20 }} />
+        </View>
+      </Modal>
+      <Modal visible={examples} animationType="slide" onRequestClose={() => setExamples(false)}>
+        <View style={{ flex: 1, backgroundColor: colors.bg, padding: 20 }}>
+          <Pressable onPress={() => setExamples(false)} style={{ paddingVertical: 10 }}>
+            <Text style={{ fontSize: 24, color: colors.textMuted }}>✕</Text>
+          </Pressable>
+          <Title style={{ fontSize: 22, marginBottom: 10 }}>{L('Exemples de communautés', 'Community examples')}</Title>
+          {[
+            ['🏫', L('Groupe scolaire', 'School'), L('Annonces aux parents, un groupe par classe, groupe des enseignants', 'Announcements, one group per class')],
+            ['🏘️', L('Quartier', 'Neighbourhood'), L('Sécurité, entraide, petites annonces, événements du quartier', 'Safety, help, local events')],
+            ['⛪', L('Église / association', 'Church / association'), L('Annonces, chorale, jeunesse, comité', 'Announcements, choir, youth, committee')],
+            ['🏪', L('Commerce / entreprise', 'Business'), L('Annonces clients, service après-vente, équipe, livreurs', 'Customers, support, team')],
+            ['⚽', L('Club de sport', 'Sports club'), L('Calendrier des matchs, équipes, supporters', 'Fixtures, teams, fans')],
+          ].map(([icon, title, text]) => (
+            <View key={title} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, gap: 14 }}>
+              <View style={{ width: 50, height: 50, borderRadius: 14, backgroundColor: colors.chipActiveBg, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 24 }}>{icon}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Title>{title}</Title>
+                <Muted>{text}</Muted>
+              </View>
+            </View>
+          ))}
+          <Button title={L('Créer ma communauté', 'Create my community')} onPress={() => { setExamples(false); setIntro(false); setForm(true); }} style={{ borderRadius: 30, marginTop: 'auto', marginBottom: 20 }} />
         </View>
       </Modal>
       <Modal visible={form} transparent animationType="fade" onRequestClose={() => setForm(false)}>

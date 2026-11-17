@@ -85,7 +85,28 @@ export default function EventsScreen({ navigation }) {
         keyExtractor={(r, i) => r.id || 'h' + i}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={load} tintColor={colors.primary} />}
         contentContainerStyle={{ paddingBottom: 100 }}
-        ListEmptyComponent={!loading ? <Muted style={{ padding: 20 }}>{L('Aucun événement. Touchez « + » pour en créer un.', 'No events yet.')}</Muted> : null}
+        ListEmptyComponent={
+          !loading ? (
+            <View style={{ padding: 24 }}>
+              <Text style={{ fontSize: 70, textAlign: 'center' }}>📅</Text>
+              <Text style={{ color: colors.text, fontSize: 24, textAlign: 'center', marginTop: 10 }}>{L('Événements que vous pouvez partager avec tout le monde', 'Events you can share with anyone')}</Text>
+              {[
+                ['🔗', L('Obtenez un lien à partager', 'Get a link to share'), L('Envoyez une invitation aux personnes invitées, même si elles ne sont pas sur Unichat +.', 'Invite people even if they are not on Unichat +.')],
+                ['🗓️', L('Tout se fait au même endroit', 'All in one place'), L('Trouvez les événements que vous organisez ou auxquels vous êtes invité·e dans Événements.', 'Find your events in Events.')],
+              ].map(([icon, title, text]) => (
+                <View key={icon} style={{ flexDirection: 'row', gap: 16, marginTop: 18 }}>
+                  <Text style={{ fontSize: 26, width: 34, textAlign: 'center' }}>{icon}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ color: colors.text, fontSize: 17 }}>{title}</Text>
+                    <Text style={{ color: colors.textMuted, fontSize: 15, marginTop: 2 }}>{text}</Text>
+                  </View>
+                </View>
+              ))}
+              <Muted style={{ textAlign: 'center', marginTop: 22, fontSize: 13 }}>{L("Les invité·es peuvent voir les informations de l'événement. Vos messages et appels personnels restent privés.", 'Guests can see event details.')}</Muted>
+              <Button title={L('Créer un événement', 'Create an event')} onPress={async () => { await markIntroSeen(); navigation.navigate('EventEdit', {}); }} style={{ marginTop: 18, borderRadius: 30 }} />
+            </View>
+          ) : null
+        }
         renderItem={({ item: e }) => {
           if (e.h) return <Text style={{ color: colors.textMuted, fontSize: 15, fontWeight: '600', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 6 }}>{e.h}</Text>;
           const mine = (e.event_responses || []).find((r) => r.user_id === userId);

@@ -521,6 +521,7 @@ export default function ChatScreen({ route, navigation }) {
                 { label: '🖼  ' + t('photo'), onPress: pickImage },
                 { label: '📷  Caméra', onPress: takePhoto },
                 { label: '📄  ' + t('document'), onPress: pickDoc },
+                { label: '📅  ' + L('Événement', 'Event'), onPress: () => navigation.navigate('EventEdit', { conversationId: id }) },
               ] })}
               style={{ padding: 10 }}
             >
