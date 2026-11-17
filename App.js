@@ -17,6 +17,17 @@ import JoinGroupScreen from './src/screens/JoinGroupScreen';
 import GroupInfoScreen from './src/screens/GroupInfoScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import ComingSoonScreen from './src/screens/ComingSoonScreen';
+import StatusScreen from './src/screens/StatusScreen';
+import StatusViewerScreen from './src/screens/StatusViewerScreen';
+import ShopScreen from './src/screens/ShopScreen';
+import ProductEditScreen from './src/screens/ProductEditScreen';
+import SellerShopScreen from './src/screens/SellerShopScreen';
+import OrderScreen from './src/screens/OrderScreen';
+import CallsScreen from './src/screens/CallsScreen';
+import CallScreen from './src/screens/CallScreen';
+import CommunitiesScreen from './src/screens/CommunitiesScreen';
+import { navigationRef } from './src/lib/nav';
+import { L } from './src/lib/i18n';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,9 +47,10 @@ function Tabs() {
       }}
     >
       <Tab.Screen name="Chats" component={ChatsScreen} options={{ headerShown: false, tabBarLabel: t('chats'), tabBarIcon: icon('💬'), tabBarBadge: undefined }} />
-      <Tab.Screen name="Status" component={ComingSoonScreen} initialParams={{ icon: '⭕' }} options={{ title: t('news'), tabBarIcon: icon('⭕') }} />
-      <Tab.Screen name="Communities" component={ComingSoonScreen} initialParams={{ icon: '👥' }} options={{ title: t('communities'), tabBarIcon: icon('👥') }} />
-      <Tab.Screen name="Calls" component={ComingSoonScreen} initialParams={{ icon: '📞' }} options={{ title: t('calls'), tabBarIcon: icon('📞') }} />
+      <Tab.Screen name="Status" component={StatusScreen} options={{ title: L('Statuts', 'Status'), tabBarLabel: L('Statuts', 'Status'), tabBarIcon: icon('⭕') }} />
+      <Tab.Screen name="Communities" component={CommunitiesScreen} options={{ title: t('communities'), tabBarIcon: icon('👥') }} />
+      <Tab.Screen name="Calls" component={CallsScreen} options={{ title: t('calls'), tabBarIcon: icon('📞') }} />
+      <Tab.Screen name="Shop" component={ShopScreen} options={{ title: L('Boutique', 'Shop'), tabBarLabel: L('Boutique', 'Shop'), tabBarIcon: icon('🛍️') }} />
     </Tab.Navigator>
   );
 }
@@ -56,7 +68,7 @@ function Root() {
     : { ...DefaultTheme, colors: { ...DefaultTheme.colors, primary: colors.primary, background: colors.bg } };
   const header = { headerStyle: { backgroundColor: colors.primary }, headerTintColor: '#fff', headerTitleStyle: { fontWeight: '700' } };
   return (
-    <NavigationContainer theme={navTheme} linking={session ? linking : undefined} key={lang}>
+    <NavigationContainer ref={navigationRef} theme={navTheme} linking={session ? linking : undefined} key={lang}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <Stack.Navigator screenOptions={header}>
         {!session ? (
@@ -70,6 +82,11 @@ function Root() {
             <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ title: t('joinWithCode') }} />
             <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: t('settings') }} />
             <Stack.Screen name="GroupInfo" component={GroupInfoScreen} options={{ title: t('groupInfo') }} />
+            <Stack.Screen name="StatusViewer" component={StatusViewerScreen} options={{ headerShown: false, animation: 'fade' }} />
+            <Stack.Screen name="ProductEdit" component={ProductEditScreen} options={{ title: L('Produit', 'Product') }} />
+            <Stack.Screen name="SellerShop" component={SellerShopScreen} options={{ title: L('Boutique', 'Shop') }} />
+            <Stack.Screen name="Order" component={OrderScreen} options={{ title: L('Commande', 'Order') }} />
+            <Stack.Screen name="Call" component={CallScreen} options={{ headerShown: false, gestureEnabled: false }} />
           </>
         )}
       </Stack.Navigator>

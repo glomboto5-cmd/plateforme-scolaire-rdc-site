@@ -9,6 +9,7 @@ import { useApp } from '../AppContext';
 import { ActionSheet, Avatar, Input, Button } from '../components/ui';
 import { loadConversation } from '../lib/chat';
 import { signedUrl, uploadFile } from '../lib/upload';
+import { startCall } from '../lib/calls';
 
 const PRESETS = [
   { key: 'off', seconds: null },
@@ -184,14 +185,27 @@ export default function ChatScreen({ route, navigation }) {
           </View>
         </Pressable>
       ),
-      headerRight: () =>
-        canEditInfo ? (
-          <Pressable onPress={() => setSheet({ kind: 'ephemeral' })} hitSlop={10} style={{ paddingHorizontal: 10 }}>
-            <Text style={{ fontSize: 20 }}>⏱</Text>
-          </Pressable>
-        ) : null,
+      headerRight: () => (
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {!isGroup ? (
+            <Pressable onPress={() => startCall(navigation, conv, 'video', userId)} hitSlop={8} style={{ paddingHorizontal: 9 }}>
+              <Text style={{ fontSize: 20 }}>📹</Text>
+            </Pressable>
+          ) : null}
+          {!isGroup ? (
+            <Pressable onPress={() => startCall(navigation, conv, 'audio', userId)} hitSlop={8} style={{ paddingHorizontal: 9 }}>
+              <Text style={{ fontSize: 20 }}>📞</Text>
+            </Pressable>
+          ) : null}
+          {canEditInfo ? (
+            <Pressable onPress={() => setSheet({ kind: 'ephemeral' })} hitSlop={8} style={{ paddingHorizontal: 9 }}>
+              <Text style={{ fontSize: 20 }}>⏱</Text>
+            </Pressable>
+          ) : null}
+        </View>
+      ),
     });
-  }, [conv, navigation, isGroup, canEditInfo]);
+  }, [conv, navigation, isGroup, canEditInfo, userId]);
 
   const openContactSheet = () => {
     if (!conv || !conv.other) return;

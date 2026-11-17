@@ -202,3 +202,8 @@ export function tSystem(code) {
 }
 
 export const _dicts = dicts;
+
+// Texte bilingue simple pour les nouveaux écrans (français par défaut, anglais pour les autres langues)
+export function L(frText, enText) {
+  return current === 'fr' ? frText : enText || frText;
+}

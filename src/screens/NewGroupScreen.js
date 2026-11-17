@@ -9,6 +9,7 @@ import { avatarUri, searchProfiles } from '../lib/chat';
 // Sert aussi à ajouter des membres à un groupe existant (params.addTo)
 export default function NewGroupScreen({ navigation, route }) {
   const addTo = route.params && route.params.addTo;
+  const communityId = (route.params && route.params.communityId) || null;
   const { colors, userId } = useApp();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -49,7 +50,7 @@ export default function NewGroupScreen({ navigation, route }) {
       return navigation.goBack();
     }
     if (!title.trim()) { setLoading(false); return Alert.alert(t('error'), t('groupName')); }
-    const { data, error } = await supabase.rpc('create_group', { p_title: title.trim(), p_member_ids: ids, p_description: description.trim() || null });
+    const { data, error } = await supabase.rpc('create_group', { p_title: title.trim(), p_member_ids: ids, p_description: description.trim() || null, p_community_id: communityId });
     setLoading(false);
     if (error) return Alert.alert(t('error'), errText(error));
     navigation.replace('Chat', { id: data });

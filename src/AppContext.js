@@ -5,6 +5,7 @@ import * as Device from './lib/device';
 import { supabase, platformName } from './lib/supabase';
 import { setLanguage, deviceLanguage, t } from './lib/i18n';
 import { lightColors, darkColors } from './lib/theme';
+import { navigate } from './lib/nav';
 
 const Ctx = createContext(null);
 export const useApp = () => useContext(Ctx);
@@ -160,6 +161,23 @@ export function AppProvider({ children }) {
     },
     [userId]
   );
+
+  // Appels entrants (quand l'application est ouverte)
+  useEffect(() => {
+    if (!userId) return;
+    const ch = supabase
+      .channel('incoming-calls-' + userId)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'calls' }, async (p) => {
+        const c = p.new;
+        if (!c || c.initiator_id === userId || c.status !== 'ringing') return;
+        if (Date.now() - new Date(c.started_at).getTime() > 60000) return;
+        const { data: caller } = await supabase.from('profiles').select('display_name,avatar_url').eq('id', c.initiator_id).maybeSingle();
+        const av = caller && caller.avatar_url ? (caller.avatar_url.startsWith('http') ? caller.avatar_url : supabase.storage.from('avatars').getPublicUrl(caller.avatar_url).data.publicUrl) : null;
+        navigate('Call', { callId: c.id, media: c.media, incoming: true, peerName: caller ? caller.display_name : '?', peerAvatar: av });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [userId]);
 
   const value = useMemo(
     () => ({ ready, session, userId, profile, settings, colors, theme, lang, loadProfile, setProfile, updateSettings, signOut }),
