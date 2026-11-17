@@ -10,6 +10,7 @@ import { ActionSheet, Avatar, Input, Button } from '../components/ui';
 import { loadConversation } from '../lib/chat';
 import { signedUrl, uploadFile } from '../lib/upload';
 import { startCall } from '../lib/calls';
+import { PLATFORMS, socialUrl } from './SocialScreen';
 
 const PRESETS = [
   { key: 'off', seconds: null },
@@ -81,6 +82,13 @@ export default function ChatScreen({ route, navigation }) {
   const [messages, setMessages] = useState([]);
   const [receipts, setReceipts] = useState({});
   const [text, setText] = useState('');
+  const [quick, setQuick] = useState([]);
+
+  // Réponses rapides (module 10) : taper « / » pour les afficher
+  useEffect(() => {
+    supabase.from('auto_replies').select('id,shortcut,response').eq('user_id', userId).eq('kind', 'quick_reply').order('shortcut')
+      .then(({ data }) => setQuick(data || []));
+  }, [userId]);
   const [editing, setEditing] = useState(null);
   const [sheet, setSheet] = useState(null);
   const [sending, setSending] = useState(false);
@@ -207,12 +215,24 @@ export default function ChatScreen({ route, navigation }) {
     });
   }, [conv, navigation, isGroup, canEditInfo, userId]);
 
-  const openContactSheet = () => {
+  const openContactSheet = async () => {
     if (!conv || !conv.other) return;
+    // Réseaux sociaux publics de la personne (module 12)
+    const { data: socials } = await supabase
+      .from('social_accounts')
+      .select('platform,platform_name,username,profile_url')
+      .eq('user_id', conv.other.id)
+      .eq('status', 'connected')
+      .eq('is_public', true);
+    const socialActions = (socials || []).map((a) => {
+      const p = PLATFORMS.find((x) => x.key === a.platform) || { icon: '🌐', name: a.platform };
+      return { label: `${p.icon}  ${a.platform_name || p.name} · ${a.username ? '@' + a.username : a.profile_url}`, onPress: () => { const u = socialUrl(a); if (u) Linking.openURL(u); } };
+    });
     setSheet({
       kind: 'actions',
       title: conv.other.display_name + (conv.other.handle ? '  @' + conv.other.handle : ''),
       actions: [
+        ...socialActions,
         { label: t('addContact'), onPress: () => addContact(false) },
         { label: t('block'), danger: true, onPress: () => addContact(true) },
       ],
@@ -440,6 +460,19 @@ export default function ChatScreen({ route, navigation }) {
         <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.bgAlt, paddingHorizontal: 14, paddingVertical: 8 }}>
           <Text style={{ flex: 1, color: colors.primary }}>✏️ {t('editing')}</Text>
           <Pressable onPress={() => { setEditing(null); setText(''); }}><Text style={{ color: colors.danger }}>{t('cancel')}</Text></Pressable>
+        </View>
+      ) : null}
+      {canSend && text.startsWith('/') && quick.length ? (
+        <View style={{ backgroundColor: colors.bg, borderTopWidth: 0.5, borderTopColor: colors.border, maxHeight: 220 }}>
+          {quick
+            .filter((r) => ('/' + r.shortcut).startsWith(text.trim().toLowerCase()))
+            .slice(0, 6)
+            .map((r) => (
+              <Pressable key={r.id} onPress={() => setText(r.response)} style={{ paddingHorizontal: 14, paddingVertical: 10, borderBottomWidth: 0.5, borderBottomColor: colors.border }}>
+                <Text style={{ color: colors.primary, fontWeight: '700' }}>/{r.shortcut}</Text>
+                <Text style={{ color: colors.text }} numberOfLines={2}>{r.response}</Text>
+              </Pressable>
+            ))}
         </View>
       ) : null}
       {canSend ? (

@@ -32,6 +32,9 @@ import EventsScreen from './src/screens/EventsScreen';
 import EventScreen from './src/screens/EventScreen';
 import EventEditScreen from './src/screens/EventEditScreen';
 import NewContactScreen from './src/screens/NewContactScreen';
+import AutomationScreen from './src/screens/AutomationScreen';
+import NotificationsScreen from './src/screens/NotificationsScreen';
+import SocialScreen from './src/screens/SocialScreen';
 import { navigationRef } from './src/lib/nav';
 import { L } from './src/lib/i18n';
 
@@ -93,6 +96,9 @@ function Root() {
             <Stack.Screen name="Event" component={EventScreen} options={{ title: L('Événement', 'Event') }} />
             <Stack.Screen name="EventEdit" component={EventEditScreen} options={{ title: L('Créer un événement', 'Create event') }} />
             <Stack.Screen name="NewContact" component={NewContactScreen} options={{ title: L('Nouveau contact', 'New contact') }} />
+            <Stack.Screen name="Automation" component={AutomationScreen} options={{ title: L('Réponses automatiques', 'Auto-replies') }} />
+            <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: L('Notifications', 'Notifications') }} />
+            <Stack.Screen name="Social" component={SocialScreen} options={{ title: L('Réseaux sociaux', 'Social networks') }} />
             <Stack.Screen name="GroupInfo" component={GroupInfoScreen} options={{ title: t('groupInfo') }} />
             <Stack.Screen name="StatusViewer" component={StatusViewerScreen} options={{ headerShown: false, animation: 'fade' }} />
             <Stack.Screen name="ProductEdit" component={ProductEditScreen} options={{ title: L('Produit', 'Product') }} />

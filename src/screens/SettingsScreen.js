@@ -59,6 +59,9 @@ export default function SettingsScreen({ navigation }) {
       <Item icon="🎨" title={L('Apparence', 'Appearance')} sub={L("Thème de l'application", 'App theme')} onPress={() => go('appearance')} />
       <Item icon="📅" title={L('Événements', 'Events')} sub={L('Consulter et gérer les événements', 'View and manage events')} badge={L('Nouveau', 'New')} onPress={() => navigation.navigate('Events')} />
       <Item icon="🛍️" title={L('Boutique', 'Shop')} sub={L('Catalogue, commandes, clients', 'Catalog, orders, customers')} badge={L('Nouveau', 'New')} onPress={() => navigation.navigate('Home', { screen: 'Shop' })} />
+      <Item icon="🤖" title={L('Réponses automatiques', 'Auto-replies')} sub={L('Bienvenue, absence, mots-clés, réponses rapides', 'Greeting, away, keywords, quick replies')} badge={L('Nouveau', 'New')} onPress={() => navigation.navigate('Automation')} />
+      <Item icon="🌐" title={L('Réseaux sociaux', 'Social networks')} sub="Facebook, Messenger, Instagram, TikTok, YouTube, X" badge={L('Nouveau', 'New')} onPress={() => navigation.navigate('Social')} />
+      <Item icon="📬" title={L('Centre de notifications', 'Notification center')} sub={L('Commandes, paiements, appels manqués, invitations', 'Orders, payments, missed calls, invitations')} onPress={() => navigation.navigate('Notifications')} />
       <Item icon="🔔" title={L('Notifications', 'Notifications')} sub={L('Messages, groupes et appels', 'Messages, groups and calls')} onPress={() => go('notifications')} />
       <Item icon="📊" title={L('Stockage et données', 'Storage and data')} sub={L('Utilisation réseau, téléchargement auto.', 'Network usage, auto-download')} onPress={() => go('storage')} />
       <Item icon="♿" title={L('Accessibilité', 'Accessibility')} sub={L('Taille du texte, contraste', 'Text size, contrast')} onPress={() => go('accessibility')} />

@@ -3,7 +3,7 @@ import { FlatList, Pressable, RefreshControl, ScrollView, Text, TextInput, View 
 import { useFocusEffect } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
-import { t, tSystem } from '../lib/i18n';
+import { L, t, tSystem } from '../lib/i18n';
 import { useApp } from '../AppContext';
 import { ActionSheet, Avatar, Muted, Row, Title } from '../components/ui';
 import { formatTime, loadConversations, preview } from '../lib/chat';
@@ -13,6 +13,18 @@ const FILTERS = ['all', 'unread', 'favorites', 'groups'];
 
 export default function ChatsScreen({ navigation }) {
   const { colors, userId, profile } = useApp();
+  const [unreadNotif, setUnreadNotif] = useState(0);
+  useEffect(() => {
+    const count = () =>
+      supabase.from('notifications').select('id', { count: 'exact', head: true }).eq('user_id', userId).is('read_at', null)
+        .then(({ count: c }) => setUnreadNotif(c || 0));
+    count();
+    const ch = supabase.channel('notif-badge-' + userId)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications', filter: `user_id=eq.${userId}` }, count)
+      .subscribe();
+    const unsub = navigation.addListener('focus', count);
+    return () => { supabase.removeChannel(ch); unsub(); };
+  }, [userId, navigation]);
   const insets = useSafeAreaInsets();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -84,6 +96,9 @@ export default function ChatsScreen({ navigation }) {
         { label: '👥  ' + t('newGroup'), onPress: () => navigation.navigate('NewGroup') },
         { label: '🔗  ' + t('joinWithCode'), onPress: () => navigation.navigate('JoinGroup') },
         { label: '🟢  ' + t('inviteWhatsApp'), onPress: () => shareOnWhatsApp(invitationText(profile && profile.display_name)) },
+        { label: '🔔  ' + L('Notifications', 'Notifications'), onPress: () => navigation.navigate('Notifications') },
+        { label: '🤖  ' + L('Réponses automatiques', 'Auto-replies'), onPress: () => navigation.navigate('Automation') },
+        { label: '🌐  ' + L('Réseaux sociaux', 'Social networks'), onPress: () => navigation.navigate('Social') },
         { label: '⚙️  ' + t('settings'), onPress: () => navigation.navigate('Settings') },
       ],
     });
@@ -112,6 +127,14 @@ export default function ChatsScreen({ navigation }) {
       {/* En-tête */}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 10, paddingBottom: 6 }}>
         <Text style={{ flex: 1, color: colors.brand, fontSize: 26, fontWeight: '800' }}>Unichat +</Text>
+        <Pressable onPress={() => navigation.navigate('Notifications')} hitSlop={10} style={{ paddingHorizontal: 10 }}>
+          <Text style={{ fontSize: 22, color: colors.text }}>🔔</Text>
+          {unreadNotif > 0 ? (
+            <View style={{ position: 'absolute', right: 2, top: -4, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 }}>
+              <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700' }}>{unreadNotif > 99 ? '99+' : unreadNotif}</Text>
+            </View>
+          ) : null}
+        </Pressable>
         <Pressable onPress={() => navigation.navigate('NewChat')} hitSlop={10} style={{ paddingHorizontal: 10 }}>
           <Text style={{ fontSize: 22, color: colors.text }}>📷</Text>
         </Pressable>
