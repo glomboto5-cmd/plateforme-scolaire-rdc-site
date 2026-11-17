@@ -41,22 +41,6 @@ jobs:
           printf '/*    /index.html   200\n' > web-dist/_redirects
           cd web-dist && zip -qr ../ange-chat-plus-web.zip . && cd .. && ls -la ange-chat-plus-web.zip
 
-      - name: Mettre en ligne la version web (GitHub Pages)
-        continue-on-error: true
-        run: |
-          test -f web-dist/index.html
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git fetch --depth 1 origin main
-          git worktree add --detach /tmp/site FETCH_HEAD
-          rm -rf /tmp/site/ange-chat
-          mkdir -p /tmp/site/ange-chat
-          cp -r web-dist/. /tmp/site/ange-chat/
-          rm -f /tmp/site/ange-chat/_redirects
-          cd /tmp/site
-          git add ange-chat
-          git commit -m "Ange chat + Web : mise à jour automatique" || exit 0
-          git push origin HEAD:main
 
       - name: Générer le projet Android
         run: npx expo prebuild --platform android --no-install
