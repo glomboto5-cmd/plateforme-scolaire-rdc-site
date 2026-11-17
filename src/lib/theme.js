@@ -14,6 +14,9 @@ export const lightColors = {
   danger: '#D93025',
   read: '#1F7AE0',
   system: '#FFF6D6',
+  brand: '#1DAA61',
+  chipActiveBg: '#D9FDD3',
+  chipActiveText: '#0A5E3A',
 };
 
 export const darkColors = {
@@ -32,4 +35,7 @@ export const darkColors = {
   danger: '#F28B82',
   read: '#53BDEB',
   system: '#3B3A2A',
+  brand: '#21C063',
+  chipActiveBg: '#103529',
+  chipActiveText: '#D9FDD3',
 };

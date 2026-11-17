@@ -5,13 +5,15 @@ import { t } from '../lib/i18n';
 import { useApp } from '../AppContext';
 import { Avatar, Input, Muted, Row, SectionTitle, Title } from '../components/ui';
 import { avatarUri, searchProfiles, PROFILE_FIELDS } from '../lib/chat';
+import { invitationText, isValidPhone, openWhatsAppChat, shareOnWhatsApp } from '../lib/whatsapp';
 
 export default function NewChatScreen({ navigation }) {
-  const { colors, userId } = useApp();
+  const { colors, userId, profile } = useApp();
   const [q, setQ] = useState('');
   const [results, setResults] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [invites, setInvites] = useState([]);
+  const [waPhone, setWaPhone] = useState('');
 
   const loadSide = useCallback(async () => {
     const [{ data: c }, { data: inv }] = await Promise.all([
@@ -76,6 +78,31 @@ export default function NewChatScreen({ navigation }) {
               </View>
               <Title style={{ marginLeft: 12 }}>{t('joinWithCode')}</Title>
             </Row>
+
+            <SectionTitle>🟢 {t('whatsappSection')}</SectionTitle>
+            <View style={{ paddingHorizontal: 16, gap: 8 }}>
+              <Input placeholder={t('whatsappPhone')} value={waPhone} onChangeText={setWaPhone} keyboardType="phone-pad" />
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <Pressable
+                  onPress={() => (isValidPhone(waPhone) ? openWhatsAppChat(waPhone) : Alert.alert(t('error'), t('phoneInvalid')))}
+                  style={{ flex: 1, backgroundColor: '#25D366', borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}
+                >
+                  <Text style={{ color: '#fff', fontWeight: '700' }}>{t('whatsappWrite')}</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() =>
+                    isValidPhone(waPhone)
+                      ? openWhatsAppChat(waPhone, invitationText(profile && profile.display_name))
+                      : shareOnWhatsApp(invitationText(profile && profile.display_name))
+                  }
+                  style={{ flex: 1, borderWidth: 1, borderColor: '#25D366', borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}
+                >
+                  <Text style={{ color: '#25D366', fontWeight: '700' }}>{t('whatsappInvite')}</Text>
+                </Pressable>
+              </View>
+              <Muted style={{ fontSize: 12 }}>{t('whatsappHint')}</Muted>
+            </View>
+
             {invites.length > 0 && <SectionTitle>{t('invitations')}</SectionTitle>}
             {invites.map((inv) => (
               <View key={inv.id} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10 }}>

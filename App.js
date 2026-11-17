@@ -24,21 +24,21 @@ const Tab = createBottomTabNavigator();
 function Tabs() {
   const { colors } = useApp();
   const icon = (e) => ({ focused }) => <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.55 }}>{e}</Text>;
-  const header = { headerStyle: { backgroundColor: colors.primary }, headerTintColor: '#fff', headerTitleStyle: { fontWeight: '700' } };
+  const header = { headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.text, headerTitleStyle: { fontWeight: '800', fontSize: 22 }, headerShadowVisible: false };
   return (
     <Tab.Navigator
       screenOptions={{
         ...header,
-        tabBarActiveTintColor: colors.primary,
+        tabBarActiveTintColor: colors.text,
+        tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
+        tabBarStyle: { backgroundColor: colors.bg, borderTopColor: colors.border, height: 64, paddingBottom: 8 },
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: { backgroundColor: colors.bg, borderTopColor: colors.border },
       }}
     >
-      <Tab.Screen name="Chats" component={ChatsScreen} options={{ title: 'Unichat +', tabBarLabel: t('chats'), tabBarIcon: icon('💬') }} />
-      <Tab.Screen name="Status" component={ComingSoonScreen} initialParams={{ icon: '⭕' }} options={{ title: t('status'), tabBarIcon: icon('⭕') }} />
+      <Tab.Screen name="Chats" component={ChatsScreen} options={{ headerShown: false, tabBarLabel: t('chats'), tabBarIcon: icon('💬'), tabBarBadge: undefined }} />
+      <Tab.Screen name="Status" component={ComingSoonScreen} initialParams={{ icon: '⭕' }} options={{ title: t('news'), tabBarIcon: icon('⭕') }} />
+      <Tab.Screen name="Communities" component={ComingSoonScreen} initialParams={{ icon: '👥' }} options={{ title: t('communities'), tabBarIcon: icon('👥') }} />
       <Tab.Screen name="Calls" component={ComingSoonScreen} initialParams={{ icon: '📞' }} options={{ title: t('calls'), tabBarIcon: icon('📞') }} />
-      <Tab.Screen name="Shop" component={ComingSoonScreen} initialParams={{ icon: '🛍️' }} options={{ title: t('shop'), tabBarIcon: icon('🛍️') }} />
-      <Tab.Screen name="Settings" component={SettingsScreen} options={{ title: t('settings'), tabBarIcon: icon('⚙️') }} />
     </Tab.Navigator>
   );
 }
@@ -57,7 +57,7 @@ function Root() {
   const header = { headerStyle: { backgroundColor: colors.primary }, headerTintColor: '#fff', headerTitleStyle: { fontWeight: '700' } };
   return (
     <NavigationContainer theme={navTheme} linking={session ? linking : undefined} key={lang}>
-      <StatusBar style="light" />
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <Stack.Navigator screenOptions={header}>
         {!session ? (
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
@@ -68,6 +68,7 @@ function Root() {
             <Stack.Screen name="NewChat" component={NewChatScreen} options={{ title: t('startChat') }} />
             <Stack.Screen name="NewGroup" component={NewGroupScreen} options={{ title: t('newGroup') }} />
             <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ title: t('joinWithCode') }} />
+            <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: t('settings') }} />
             <Stack.Screen name="GroupInfo" component={GroupInfoScreen} options={{ title: t('groupInfo') }} />
           </>
         )}

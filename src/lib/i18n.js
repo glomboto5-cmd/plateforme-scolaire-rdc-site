@@ -60,6 +60,14 @@ const fr = {
   today: "Aujourd'hui", yesterday: 'Hier', confirmLeave: 'Voulez-vous vraiment quitter ce groupe ?',
   noResults: 'Aucun résultat', newChatHint: 'Recherchez une personne inscrite sur Unichat +',
   disappearsAfter: 'Les nouveaux messages disparaîtront après', members_count: 'membres',
+  filterAll: 'Toutes', filterUnread: 'Non lues', filterFavorites: 'Favoris', filterGroups: 'Groupes',
+  searchChats: 'Rechercher une discussion', news: 'Actus', communities: 'Communautés',
+  addFavorite: 'Ajouter aux favoris', removeFavorite: 'Retirer des favoris', markRead: 'Marquer comme lu',
+  archive: 'Archiver', unarchive: 'Désarchiver', inviteWhatsApp: 'Inviter par WhatsApp',
+  whatsappSection: 'WhatsApp (normal ou Business)', whatsappPhone: 'Numéro WhatsApp, ex. +243812345678',
+  whatsappWrite: 'Écrire sur WhatsApp', whatsappInvite: 'Inviter sur Unichat +',
+  whatsappHint: 'La discussion s\'ouvre dans WhatsApp ou WhatsApp Business. WhatsApp ne permet pas d\'afficher ses messages dans une autre application.',
+  phoneInvalid: 'Numéro invalide. Utilisez le format international, ex. +243812345678',
 };
 
 const en = {
@@ -105,6 +113,14 @@ const en = {
   today: 'Today', yesterday: 'Yesterday', confirmLeave: 'Do you really want to leave this group?',
   noResults: 'No results', newChatHint: 'Search for someone registered on Unichat +',
   disappearsAfter: 'New messages will disappear after', members_count: 'members',
+  filterAll: 'All', filterUnread: 'Unread', filterFavorites: 'Favorites', filterGroups: 'Groups',
+  searchChats: 'Search chats', news: 'Updates', communities: 'Communities',
+  addFavorite: 'Add to favorites', removeFavorite: 'Remove from favorites', markRead: 'Mark as read',
+  archive: 'Archive', unarchive: 'Unarchive', inviteWhatsApp: 'Invite via WhatsApp',
+  whatsappSection: 'WhatsApp (regular or Business)', whatsappPhone: 'WhatsApp number, e.g. +243812345678',
+  whatsappWrite: 'Message on WhatsApp', whatsappInvite: 'Invite to Unichat +',
+  whatsappHint: 'The chat opens in WhatsApp or WhatsApp Business. WhatsApp does not allow its messages to be shown in another app.',
+  phoneInvalid: 'Invalid number. Use international format, e.g. +243812345678',
 };
 
 // Traductions de base (à faire valider, notamment le lingala)

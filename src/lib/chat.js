@@ -25,8 +25,10 @@ export async function loadConversations(userId) {
     )
     .in('id', ids);
   if (e2) throw e2;
-  // Dernier message de chaque discussion
+  const meta = Object.fromEntries((mine || []).map((m) => [m.conversation_id, m]));
+  // Dernier message et nombre de non lus de chaque discussion
   const lastById = {};
+  const countById = {};
   await Promise.all(
     (convs || []).map(async (c) => {
       const { data } = await supabase
@@ -36,11 +38,20 @@ export async function loadConversations(userId) {
         .order('created_at', { ascending: false })
         .limit(1);
       lastById[c.id] = data && data[0];
+      const m = meta[c.id] || {};
+      let q = supabase
+        .from('messages')
+        .select('id', { count: 'exact', head: true })
+        .eq('conversation_id', c.id)
+        .neq('sender_id', userId)
+        .neq('type', 'system');
+      if (m.last_read_at) q = q.gt('created_at', m.last_read_at);
+      const { count } = await q;
+      countById[c.id] = count || 0;
     })
   );
-  const meta = Object.fromEntries((mine || []).map((m) => [m.conversation_id, m]));
   return (convs || [])
-    .map((c) => decorate(c, userId, meta[c.id], lastById[c.id]))
+    .map((c) => ({ ...decorate(c, userId, meta[c.id], lastById[c.id]), unreadCount: countById[c.id] || 0, archived: !!(meta[c.id] && meta[c.id].is_archived) }))
     .sort((a, b) => (b.pinned - a.pinned) || String(b.sortAt).localeCompare(String(a.sortAt)));
 }
 

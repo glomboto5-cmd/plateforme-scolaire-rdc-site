@@ -155,8 +155,8 @@ export default function ChatScreen({ route, navigation }) {
         >
           <Avatar uri={conv.avatar} name={conv.name} size={34} />
           <View style={{ marginLeft: 10, maxWidth: 200 }}>
-            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 16 }} numberOfLines={1}>{conv.name}</Text>
-            {isGroup ? <Text style={{ color: '#E0F2EE', fontSize: 12 }}>{conv.participants.length} {t('members_count')}</Text> : null}
+            <Text style={{ color: colors.text, fontWeight: '700', fontSize: 16 }} numberOfLines={1}>{conv.name}</Text>
+            {isGroup ? <Text style={{ color: colors.textMuted, fontSize: 12 }}>{conv.participants.length} {t('members_count')}</Text> : null}
           </View>
         </Pressable>
       ),
