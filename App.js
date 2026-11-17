@@ -26,6 +26,8 @@ import OrderScreen from './src/screens/OrderScreen';
 import CallsScreen from './src/screens/CallsScreen';
 import CallScreen from './src/screens/CallScreen';
 import CommunitiesScreen from './src/screens/CommunitiesScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import SettingsDetailScreen from './src/screens/SettingsDetailScreen';
 import { navigationRef } from './src/lib/nav';
 import { L } from './src/lib/i18n';
 
@@ -81,6 +83,8 @@ function Root() {
             <Stack.Screen name="NewGroup" component={NewGroupScreen} options={{ title: t('newGroup') }} />
             <Stack.Screen name="JoinGroup" component={JoinGroupScreen} options={{ title: t('joinWithCode') }} />
             <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: t('settings') }} />
+            <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: L('Profil', 'Profile') }} />
+            <Stack.Screen name="SettingsDetail" component={SettingsDetailScreen} options={{ title: '' }} />
             <Stack.Screen name="GroupInfo" component={GroupInfoScreen} options={{ title: t('groupInfo') }} />
             <Stack.Screen name="StatusViewer" component={StatusViewerScreen} options={{ headerShown: false, animation: 'fade' }} />
             <Stack.Screen name="ProductEdit" component={ProductEditScreen} options={{ title: L('Produit', 'Product') }} />
