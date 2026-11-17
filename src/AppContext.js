@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, AppState, I18nManager, useColorScheme } from 'react-native';
+import { Alert, AppState, I18nManager, Linking, useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Device from './lib/device';
 import { supabase, platformName } from './lib/supabase';
@@ -10,6 +10,38 @@ const Ctx = createContext(null);
 export const useApp = () => useContext(Ctx);
 
 const DEVICE_KEY = 'unichat.deviceId';
+
+function parseParams(url) {
+  const out = {};
+  const parts = [];
+  const h = url.indexOf('#');
+  const q = url.indexOf('?');
+  if (q >= 0) parts.push(url.slice(q + 1, h > q ? h : undefined));
+  if (h >= 0) parts.push(url.slice(h + 1));
+  parts.join('&').split('&').forEach((kv) => {
+    if (!kv) return;
+    const i = kv.indexOf('=');
+    const k = decodeURIComponent(i >= 0 ? kv.slice(0, i) : kv);
+    out[k] = decodeURIComponent((i >= 0 ? kv.slice(i + 1) : '').replace(/\+/g, ' '));
+  });
+  return out;
+}
+
+async function handleAuthUrl(url) {
+  if (!url || !/access_token|token_hash|error|code=/.test(url)) return;
+  const p = parseParams(url);
+  let error = null;
+  if (p.error_description || p.error) {
+    error = { message: p.error_description || p.error };
+  } else if (p.access_token && p.refresh_token) {
+    ({ error } = await supabase.auth.setSession({ access_token: p.access_token, refresh_token: p.refresh_token }));
+  } else if (p.token_hash) {
+    ({ error } = await supabase.auth.verifyOtp({ token_hash: p.token_hash, type: p.type || 'email' }));
+  } else if (p.code) {
+    ({ error } = await supabase.auth.exchangeCodeForSession(p.code));
+  }
+  if (error) Alert.alert(t('error'), error.message === 'Email link is invalid or has expired' ? t('linkExpired') : error.message);
+}
 
 export function AppProvider({ children }) {
   const scheme = useColorScheme();
@@ -31,7 +63,13 @@ export function AppProvider({ children }) {
       setReady(true);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
-    return () => sub.subscription.unsubscribe();
+    // Connexion par le lien reçu par e-mail (unichatplus://login#access_token=...)
+    Linking.getInitialURL().then((u) => u && handleAuthUrl(u));
+    const linkSub = Linking.addEventListener('url', (ev) => handleAuthUrl(ev.url));
+    return () => {
+      sub.subscription.unsubscribe();
+      linkSub.remove();
+    };
   }, []);
 
   const userId = session ? session.user.id : null;

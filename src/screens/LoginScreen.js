@@ -21,7 +21,11 @@ export default function LoginScreen() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithOtp({
       email: mail,
-      options: { shouldCreateUser: true, data: { display_name: name.trim(), language: getLanguage() } },
+      options: {
+        shouldCreateUser: true,
+        emailRedirectTo: 'unichatplus://login',
+        data: { display_name: name.trim(), language: getLanguage() },
+      },
     });
     setLoading(false);
     if (error) return Alert.alert(t('error'), errText(error));
@@ -55,6 +59,10 @@ export default function LoginScreen() {
         ) : (
           <View style={{ gap: 12 }}>
             <Muted>{t('codeSentTo')} {email}</Muted>
+            <View style={{ backgroundColor: colors.bgAlt, borderRadius: 12, padding: 14 }}>
+              <Text style={{ color: colors.text, fontSize: 16, fontWeight: '700' }}>📧 {t('openLink')}</Text>
+              <Muted style={{ marginTop: 4 }}>{t('openLinkHint')}</Muted>
+            </View>
             <Text style={{ color: colors.text, fontSize: 16 }}>{t('enterCode')}</Text>
             <Input
               placeholder="000000"
