@@ -189,8 +189,9 @@ export default function NewChatScreen({ navigation }) {
           !searching ? (
             <>
               <Action icon="👥" label={L('Nouveau groupe', 'New group')} onPress={() => navigation.replace('NewGroup')} />
-              <Action icon="👤" label={L('Nouveau contact', 'New contact')} onPress={newContact} />
-              <Action icon="🏘️" label={L('Nouvelle communauté', 'New community')} onPress={() => navigation.navigate('Home', { screen: 'Communities' })} />
+              <Action icon="👤" label={L('Nouveau contact', 'New contact')} onPress={() => navigation.navigate('NewContact')} />
+              <Action icon="🏘️" label={L('Nouvelle communauté', 'New community')} onPress={() => navigation.navigate('Home', { screen: 'Communities', params: { create: Date.now() } })} />
+              <Action icon="📅" label={L('Nouvel événement', 'New event')} onPress={() => navigation.navigate('Events')} />
               {invites.length > 0 ? <Section title={t('invitations')} /> : null}
               {invites.map((inv) => (
                 <View key={inv.id} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10 }}>

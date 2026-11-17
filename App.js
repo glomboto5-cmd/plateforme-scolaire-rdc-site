@@ -28,6 +28,10 @@ import CallScreen from './src/screens/CallScreen';
 import CommunitiesScreen from './src/screens/CommunitiesScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import SettingsDetailScreen from './src/screens/SettingsDetailScreen';
+import EventsScreen from './src/screens/EventsScreen';
+import EventScreen from './src/screens/EventScreen';
+import EventEditScreen from './src/screens/EventEditScreen';
+import NewContactScreen from './src/screens/NewContactScreen';
 import { navigationRef } from './src/lib/nav';
 import { L } from './src/lib/i18n';
 
@@ -59,7 +63,7 @@ function Tabs() {
 
 const linking = {
   prefixes: ['unichatplus://'],
-  config: { screens: { JoinGroup: 'join/:code' } },
+  config: { screens: { JoinGroup: 'join/:code', Event: 'event/:code' } },
 };
 
 function Root() {
@@ -85,6 +89,10 @@ function Root() {
             <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: t('settings') }} />
             <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: L('Profil', 'Profile') }} />
             <Stack.Screen name="SettingsDetail" component={SettingsDetailScreen} options={{ title: '' }} />
+            <Stack.Screen name="Events" component={EventsScreen} options={{ title: L('Événements', 'Events') }} />
+            <Stack.Screen name="Event" component={EventScreen} options={{ title: L('Événement', 'Event') }} />
+            <Stack.Screen name="EventEdit" component={EventEditScreen} options={{ title: L('Créer un événement', 'Create event') }} />
+            <Stack.Screen name="NewContact" component={NewContactScreen} options={{ title: L('Nouveau contact', 'New contact') }} />
             <Stack.Screen name="GroupInfo" component={GroupInfoScreen} options={{ title: t('groupInfo') }} />
             <Stack.Screen name="StatusViewer" component={StatusViewerScreen} options={{ headerShown: false, animation: 'fade' }} />
             <Stack.Screen name="ProductEdit" component={ProductEditScreen} options={{ title: L('Produit', 'Product') }} />

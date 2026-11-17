@@ -2,7 +2,7 @@
   "expo": {
     "name": "Unichat +",
     "slug": "unichat-plus",
-    "version": "1.6.2",
+    "version": "1.7.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -22,7 +22,7 @@
     },
     "android": {
       "package": "com.unichatplus.app",
-      "versionCode": 15,
+      "versionCode": 16,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0E7C66"
@@ -36,7 +36,8 @@
         "MODIFY_AUDIO_SETTINGS",
         "INTERNET",
         "ACCESS_NETWORK_STATE",
-        "BLUETOOTH_CONNECT"
+        "BLUETOOTH_CONNECT",
+        "WRITE_CONTACTS"
       ]
     },
     "web": {

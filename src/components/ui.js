@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Image, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useApp } from '../AppContext';
 
 export function Avatar({ uri, name, size = 44 }) {
@@ -87,6 +87,7 @@ export function ActionSheet({ visible, title, actions, onClose }) {
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable style={[styles.sheet, { backgroundColor: colors.card }]}>
           {title ? <Text style={{ color: colors.textMuted, padding: 16, paddingBottom: 8 }}>{title}</Text> : null}
+          <ScrollView style={{ maxHeight: 460 }}>
           {(actions || []).map((a, i) => (
             <Pressable
               key={i}
@@ -99,6 +100,7 @@ export function ActionSheet({ visible, title, actions, onClose }) {
               <Text style={{ color: a.danger ? colors.danger : colors.text, fontSize: 16 }}>{a.label}</Text>
             </Pressable>
           ))}
+          </ScrollView>
         </Pressable>
       </Pressable>
     </Modal>

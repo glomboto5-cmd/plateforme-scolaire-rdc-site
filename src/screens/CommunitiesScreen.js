@@ -6,11 +6,14 @@ import { L, t } from '../lib/i18n';
 import { useApp } from '../AppContext';
 import { Avatar, Button, Input, Muted, Title } from '../components/ui';
 
-export default function CommunitiesScreen({ navigation }) {
+export default function CommunitiesScreen({ navigation, route }) {
   const { colors, userId } = useApp();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(false);
+  const [intro, setIntro] = useState(false);
+  const createParam = route && route.params && route.params.create;
+  React.useEffect(() => { if (createParam) setIntro(true); }, [createParam]);
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
   const [busy, setBusy] = useState(false);
@@ -60,7 +63,7 @@ export default function CommunitiesScreen({ navigation }) {
         onRefresh={load}
         refreshing={loading}
         ListHeaderComponent={
-          <Pressable onPress={() => setForm(true)} style={{ flexDirection: 'row', alignItems: 'center', padding: 16, gap: 14 }}>
+          <Pressable onPress={() => setIntro(true)} style={{ flexDirection: 'row', alignItems: 'center', padding: 16, gap: 14 }}>
             <View style={{ width: 52, height: 52, borderRadius: 14, backgroundColor: colors.bgAlt, alignItems: 'center', justifyContent: 'center' }}>
               <Text style={{ fontSize: 24 }}>👥</Text>
             </View>
@@ -101,6 +104,28 @@ export default function CommunitiesScreen({ navigation }) {
         )}
       />
 
+      <Modal visible={intro} animationType="slide" onRequestClose={() => setIntro(false)}>
+        <View style={{ flex: 1, backgroundColor: colors.bg, padding: 24 }}>
+          <Pressable onPress={() => setIntro(false)} style={{ paddingVertical: 10 }}>
+            <Text style={{ fontSize: 24, color: colors.textMuted }}>✕</Text>
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ width: 240, height: 170, borderRadius: 24, backgroundColor: colors.chipActiveBg, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.text }}>
+              <Text style={{ fontSize: 64 }}>📢</Text>
+              <Text style={{ fontSize: 30, position: 'absolute', top: 14, left: 18 }}>👥</Text>
+              <Text style={{ fontSize: 30, position: 'absolute', bottom: 14, right: 18 }}>💬</Text>
+            </View>
+            <Text style={{ color: colors.text, fontSize: 26, fontWeight: '700', marginTop: 30, textAlign: 'center' }}>{L('Créer une nouvelle communauté', 'Create a new community')}</Text>
+            <Text style={{ color: colors.textMuted, fontSize: 16, textAlign: 'center', marginTop: 14, lineHeight: 23 }}>
+              {L(
+                "Rassemblez vos voisins, un groupe scolaire, vos clients ou d'autres. Créez des groupes sur des sujets précis pour les membres et, en tant qu'admin, envoyez rapidement vos annonces.",
+                'Bring together neighbours, a school or customers. Create topic groups and send announcements as admin.'
+              )}
+            </Text>
+          </View>
+          <Button title={L('Démarrer', 'Get started')} onPress={() => { setIntro(false); setForm(true); }} style={{ borderRadius: 30, marginBottom: 20 }} />
+        </View>
+      </Modal>
       <Modal visible={form} transparent animationType="fade" onRequestClose={() => setForm(false)}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', padding: 20 }}>
           <View style={{ backgroundColor: colors.card, borderRadius: 16, padding: 18, gap: 12 }}>
