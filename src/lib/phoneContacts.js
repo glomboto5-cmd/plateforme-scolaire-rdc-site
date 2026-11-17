@@ -5,7 +5,7 @@ import { cleanPhone } from './whatsapp';
 import { getWhatsAppContacts } from '../../modules/whatsapp-contacts';
 
 // Lit le répertoire du téléphone (les mêmes contacts que ceux de WhatsApp),
-// puis indique lesquels sont déjà inscrits sur Unichat +.
+// puis indique lesquels sont déjà inscrits sur Angechat.
 // Les numéros sont seulement comparés côté serveur ; ils ne sont pas enregistrés.
 
 export async function loadPhoneContacts() {
@@ -45,7 +45,7 @@ export async function loadPhoneContacts() {
   });
   const list = Object.values(byPhone);
 
-  // Correspondance avec les comptes Unichat + (par paquets)
+  // Correspondance avec les comptes Angechat (par paquets)
   const all = list.map((x) => x.phone);
   for (let i = 0; i < all.length; i += 1000) {
     const { data: found } = await supabase.rpc('match_phone_contacts', { p_phones: all.slice(i, i + 1000) });

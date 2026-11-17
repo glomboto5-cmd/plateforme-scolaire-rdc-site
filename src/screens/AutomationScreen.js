@@ -94,7 +94,7 @@ export default function AutomationScreen() {
     <ScrollView style={{ flex: 1, backgroundColor: colors.bgAlt }} contentContainerStyle={{ paddingBottom: 40 }}>
       <Muted style={{ padding: 16 }}>
         {L(
-          'Les réponses automatiques sont envoyées par le serveur Unichat +, même quand votre téléphone est éteint. Elles fonctionnent dans les discussions privées (personnelles et commerciales).',
+          'Les réponses automatiques sont envoyées par le serveur Angechat, même quand votre téléphone est éteint. Elles fonctionnent dans les discussions privées (personnelles et commerciales).',
           'Auto-replies are sent by the server, even when your phone is off.'
         )}
       </Muted>

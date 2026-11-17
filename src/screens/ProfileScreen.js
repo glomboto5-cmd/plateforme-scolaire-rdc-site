@@ -118,7 +118,7 @@ export default function ProfileScreen() {
 
       <View style={{ padding: 16, paddingBottom: 40 }}>
         <Button title={t('logout')} variant="danger" onPress={signOut} />
-        <Muted style={{ textAlign: 'center', marginTop: 16, fontSize: 12 }}>Unichat + · v1.0.0</Muted>
+        <Muted style={{ textAlign: 'center', marginTop: 16, fontSize: 12 }}>Angechat · v1.0.0</Muted>
       </View>
 
       <ActionSheet visible={!!sheet} title={sheet && sheet.title} actions={sheet && sheet.actions} onClose={() => setSheet(null)} />

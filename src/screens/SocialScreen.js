@@ -70,8 +70,8 @@ export default function SocialScreen() {
     <ScrollView style={{ flex: 1, backgroundColor: colors.bgAlt }} contentContainerStyle={{ paddingBottom: 40 }}>
       <Muted style={{ padding: 16 }}>
         {L(
-          'Reliez vos comptes : ils apparaissent sur votre profil Unichat + et vos contacts peuvent vous y retrouver en un geste. Vous pouvez aussi partager vos produits, statuts et événements sur ces réseaux.',
-          'Link your accounts: they appear on your Unichat + profile.'
+          'Reliez vos comptes : ils apparaissent sur votre profil Angechat et vos contacts peuvent vous y retrouver en un geste. Vous pouvez aussi partager vos produits, statuts et événements sur ces réseaux.',
+          'Link your accounts: they appear on your Angechat profile.'
         )}
       </Muted>
       {PLATFORMS.map((p) => {

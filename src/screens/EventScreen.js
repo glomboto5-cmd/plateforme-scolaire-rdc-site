@@ -20,7 +20,7 @@ export function shareEvent(e) {
       (e.location ? `\n📍 ${e.location}` : '') +
       (e.online_link ? `\n🔗 ${e.online_link}` : '') +
       (e.description ? `\n\n${e.description}` : '') +
-      `\n\n${L('Répondre sur Unichat +', 'RSVP on Unichat +')} : unichatplus://event/${e.code}\n${L('Code', 'Code')} : ${e.code}\n${L("Pas encore l'application ?", 'No app yet?')} ${APK}`,
+      `\n\n${L('Répondre sur Angechat', 'RSVP on Angechat')} : unichatplus://event/${e.code}\n${L('Code', 'Code')} : ${e.code}\n${L("Pas encore l'application ?", 'No app yet?')} ${APK}`,
   });
 }
 

@@ -69,7 +69,7 @@ export default function NewContactScreen({ navigation }) {
       }
       setBusy(false);
       if (user) {
-        Alert.alert(L('Contact enregistré', 'Contact saved'), L(`${name} est sur Unichat +. Vous pouvez lui écrire.`, `${name} is on Unichat +.`), [
+        Alert.alert(L('Contact enregistré', 'Contact saved'), L(`${name} est sur Angechat. Vous pouvez lui écrire.`, `${name} is on Angechat.`), [
           { text: 'OK', onPress: () => navigation.goBack() },
           {
             text: L('Écrire', 'Message'),
@@ -80,7 +80,7 @@ export default function NewContactScreen({ navigation }) {
           },
         ]);
       } else {
-        Alert.alert(L('Contact enregistré', 'Contact saved'), L(`${name} n'est pas encore sur Unichat +. Vous pourrez l'inviter.`, `${name} is not on Unichat + yet.`), [{ text: 'OK', onPress: () => navigation.goBack() }]);
+        Alert.alert(L('Contact enregistré', 'Contact saved'), L(`${name} n'est pas encore sur Angechat. Vous pourrez l'inviter.`, `${name} is not on Angechat yet.`), [{ text: 'OK', onPress: () => navigation.goBack() }]);
       }
     } catch (e) {
       setBusy(false);

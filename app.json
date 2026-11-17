@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Unichat +",
+    "name": "Angechat",
     "slug": "unichat-plus",
     "version": "1.9.1",
     "orientation": "portrait",
@@ -17,7 +17,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.unichatplus.app",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "Unichat + utilise le micro pour les appels."
+        "NSMicrophoneUsageDescription": "Angechat utilise le micro pour les appels."
       }
     },
     "android": {
@@ -43,8 +43,8 @@
     "web": {
       "bundler": "metro",
       "output": "single",
-      "name": "Unichat +",
-      "shortName": "Unichat +",
+      "name": "Angechat",
+      "shortName": "Angechat",
       "themeColor": "#0E7C66",
       "backgroundColor": "#FFFFFF",
       "favicon": "./assets/icon.png",
@@ -55,14 +55,14 @@
       [
         "expo-contacts",
         {
-          "contactsPermission": "Unichat + affiche vos contacts pour vous permettre de leur écrire ou de les inviter."
+          "contactsPermission": "Angechat affiche vos contacts pour vous permettre de leur écrire ou de les inviter."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Unichat + a besoin d'accéder à vos photos pour les partager.",
-          "cameraPermission": "Unichat + a besoin de la caméra pour prendre des photos."
+          "photosPermission": "Angechat a besoin d'accéder à vos photos pour les partager.",
+          "cameraPermission": "Angechat a besoin de la caméra pour prendre des photos."
         }
       ],
       [
@@ -77,8 +77,8 @@
       [
         "@config-plugins/react-native-webrtc",
         {
-          "cameraPermission": "Unichat + utilise la caméra pour les appels vidéo.",
-          "microphonePermission": "Unichat + utilise le micro pour les appels."
+          "cameraPermission": "Angechat utilise la caméra pour les appels vidéo.",
+          "microphonePermission": "Angechat utilise le micro pour les appels."
         }
       ]
     ],

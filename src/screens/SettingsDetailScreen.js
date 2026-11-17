@@ -98,7 +98,7 @@ export default function SettingsDetailScreen({ route, navigation }) {
         <>
           <Muted style={{ padding: 20 }}>
             {L(
-              "Unichat + n'autorise qu'un seul appareil actif à la fois. Quand vous vous connectez sur un nouvel appareil, l'ancien est déconnecté automatiquement.",
+              "Angechat n'autorise qu'un seul appareil actif à la fois. Quand vous vous connectez sur un nouvel appareil, l'ancien est déconnecté automatiquement.",
               'Only one device can be active at a time.'
             )}
           </Muted>
@@ -219,7 +219,7 @@ export default function SettingsDetailScreen({ route, navigation }) {
           <Toggle title={L('Notifications', 'Notifications')} sub={L('Messages, groupes, appels, commandes et paiements', 'Messages, groups, calls, orders and payments')} value={s.notifications_enabled !== false} onChange={(v) => updateSettings({ notifications_enabled: v })} />
           <Muted style={{ padding: 20 }}>
             {L(
-              "Les sonneries se règlent aussi dans les paramètres du téléphone : Paramètres → Applications → Unichat + → Notifications.",
+              "Les sonneries se règlent aussi dans les paramètres du téléphone : Paramètres → Applications → Angechat → Notifications.",
               'Ringtones can also be set in the phone settings.'
             )}
           </Muted>
@@ -237,7 +237,7 @@ export default function SettingsDetailScreen({ route, navigation }) {
 
       {section === 'accessibility' && (
         <>
-          <Row title={L('Taille du texte', 'Text size')} sub={L('Unichat + suit la taille de texte de votre téléphone : Paramètres du téléphone → Affichage → Taille de la police.', 'Follows your phone text size.')} />
+          <Row title={L('Taille du texte', 'Text size')} sub={L('Angechat suit la taille de texte de votre téléphone : Paramètres du téléphone → Affichage → Taille de la police.', 'Follows your phone text size.')} />
           <Row title={L('Thème sombre', 'Dark theme')} sub={L('Améliore le contraste et réduit la fatigue des yeux.', 'Improves contrast.')} onPress={() => updateSettings({ theme: 'dark' })} />
         </>
       )}
@@ -259,7 +259,7 @@ export default function SettingsDetailScreen({ route, navigation }) {
           <Row title={L('Comment vendre ?', 'How to sell?')} sub={L('Boutique → Mon catalogue → Ajouter un produit.', 'Shop → My catalog → Add a product.')} />
           <Row title={L('Contacts WhatsApp', 'WhatsApp contacts')} sub={L("Vos contacts du téléphone s'affichent dans Nouvelle discussion ; ceux qui ne sont pas inscrits peuvent être contactés sur WhatsApp ou invités.", 'Phone contacts appear in New chat.')} />
           <Head>{L('À PROPOS', 'ABOUT')}</Head>
-          <Row title="Unichat +" sub={L('Version 1.4.0 · Messagerie, appels, statuts, communautés et boutique', 'Version 1.4.0')} />
+          <Row title="Angechat" sub={L('Version 1.4.0 · Messagerie, appels, statuts, communautés et boutique', 'Version 1.4.0')} />
           <Row title={L('Confidentialité', 'Privacy')} sub={L('Vos données sont protégées par des règles d’accès strictes ; seuls les participants voient leurs discussions.', 'Your data is protected by strict access rules.')} />
         </>
       )}
