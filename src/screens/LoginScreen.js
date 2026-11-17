@@ -23,7 +23,7 @@ export default function LoginScreen() {
       email: mail,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: 'unichatplus://login',
+        emailRedirectTo: Platform.OS === 'web' && typeof window !== 'undefined' ? window.location.origin + window.location.pathname : 'unichatplus://login',
         data: { display_name: name.trim(), language: getLanguage() },
       },
     });

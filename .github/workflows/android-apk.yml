@@ -33,6 +33,14 @@ jobs:
           npm install --no-audit --no-fund
           npx expo install --fix || true
 
+      - name: Version web (site à mettre en ligne)
+        continue-on-error: true
+        run: |
+          npx expo export --platform web --output-dir web-dist
+          cp assets/icon.png web-dist/icon.png || true
+          printf '/*    /index.html   200\n' > web-dist/_redirects
+          cd web-dist && zip -qr ../unichat-plus-web.zip . && cd .. && ls -la unichat-plus-web.zip
+
       - name: Générer le projet Android
         run: npx expo prebuild --platform android --no-install
 
@@ -55,14 +63,17 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: unichat-plus-apk
-          path: '*.apk'
+          path: |
+            *.apk
+            unichat-plus-web.zip
+          if-no-files-found: warn
 
       - name: Publier l'APK (lien de téléchargement)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release delete unichat-apk --yes --cleanup-tag || true
-          gh release create unichat-apk unichat-plus.apk unichat-plus-leger.apk \
+          gh release create unichat-apk unichat-plus.apk unichat-plus-leger.apk $(ls unichat-plus-web.zip 2>/dev/null) \
             --target "${GITHUB_SHA}" \
             --title "Unichat + — APK Android (version ${{ github.run_number }})" \
             --notes "Application Android Unichat +, générée automatiquement. Téléchargez unichat-plus.apk puis ouvrez-le sur votre téléphone (autorisez l'installation d'applications inconnues)." \

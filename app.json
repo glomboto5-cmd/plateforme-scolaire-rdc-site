@@ -40,7 +40,14 @@
       ]
     },
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "output": "single",
+      "name": "Unichat +",
+      "shortName": "Unichat +",
+      "themeColor": "#0E7C66",
+      "backgroundColor": "#FFFFFF",
+      "favicon": "./assets/icon.png",
+      "lang": "fr"
     },
     "plugins": [
       "expo-localization",

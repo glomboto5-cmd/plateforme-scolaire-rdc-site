@@ -32,7 +32,10 @@
     "@expo/vector-icons": "^14.0.4",
     "expo-contacts": "~14.0.5",
     "react-native-webrtc": "^124.0.4",
-    "@config-plugins/react-native-webrtc": "^10.0.0"
+    "@config-plugins/react-native-webrtc": "^10.0.0",
+    "react-dom": "18.3.1",
+    "react-native-web": "~0.19.13",
+    "@expo/metro-runtime": "~4.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2"
