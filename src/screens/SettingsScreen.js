@@ -44,6 +44,9 @@ export default function SettingsScreen({ navigation }) {
         {profile && profile.about ? <Muted style={{ marginTop: 4 }}>{profile.about}</Muted> : null}
         <Muted style={{ marginTop: 4 }}>@{profile ? profile.handle : ''} · ✏️ {L('Modifier le profil', 'Edit profile')}</Muted>
       </Pressable>
+      <Pressable onPress={() => navigation.navigate('MyQr')} style={{ position: 'absolute', right: 18, top: 18, backgroundColor: colors.bg, borderRadius: 20, padding: 10 }}>
+        <Text style={{ fontSize: 22 }}>🔳</Text>
+      </Pressable>
 
       <View style={{ margin: 16, padding: 16, borderRadius: 18, backgroundColor: colors.chipActiveBg, flexDirection: 'row', gap: 12 }}>
         <Text style={{ fontSize: 26 }}>🛡️</Text>
@@ -55,7 +58,8 @@ export default function SettingsScreen({ navigation }) {
         </View>
       </View>
 
-      <Item icon="📱" title={L('Appareils connectés', 'Linked devices')} sub={L('Appareil actif, déconnexion à distance', 'Active device, remote logout')} onPress={() => go('devices')} />
+      <Item icon="📱" title={L('Appareils connectés', 'Linked devices')} sub={L('Connecter un ordinateur, le Web ou une tablette (QR ou code)', 'Link a computer, web or tablet (QR or code)')} onPress={() => navigation.navigate('LinkedDevices')} />
+      <Item icon="🔳" title={L('Code QR', 'QR code')} sub={L('Mon code, scanner le code d’un contact', 'My code, scan a contact’s code')} onPress={() => navigation.navigate('MyQr')} />
       <Item icon="🔑" title={L('Compte', 'Account')} sub={L('Téléphone, e-mail, compte professionnel', 'Phone, email, business account')} onPress={() => go('account')} />
       <Item icon="🔒" title={L('Confidentialité', 'Privacy')} sub={L('Comptes bloqués, messages éphémères', 'Blocked accounts, disappearing messages')} onPress={() => go('privacy')} />
       <Item icon="👥" title={L('Listes', 'Lists')} sub={L('Gérer les personnes et les groupes', 'Manage people and groups')} onPress={() => go('lists')} />
@@ -80,7 +84,7 @@ export default function SettingsScreen({ navigation }) {
       <Item icon="🤝" title={L('Inviter une personne', 'Invite a friend')} onPress={() => Share.share({ message: invitationText(profile && profile.display_name) })} />
       <Item icon="⬆️" title={L("Mises à jour de l'application", 'App updates')} sub={L('Télécharger la dernière version', 'Download the latest version')} onPress={() => Linking.openURL(UPDATE_URL)} />
 
-      <Muted style={{ textAlign: 'center', padding: 24 }}>Ange chat + · v2.1.0</Muted>
+      <Muted style={{ textAlign: 'center', padding: 24 }}>Ange chat + · v2.2.0</Muted>
     </ScrollView>
   );
 }

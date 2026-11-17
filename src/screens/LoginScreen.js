@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View, Image } from 'react-native';
 import { supabase, errText } from '../lib/supabase';
-import { t, getLanguage, LANGUAGES, setLanguage } from '../lib/i18n';
+import { t, L, getLanguage, LANGUAGES, setLanguage } from '../lib/i18n';
 import { useApp } from '../AppContext';
 import { Button, Input, Muted } from '../components/ui';
 
+import LinkWithPhone from '../components/LinkWithPhone';
+
 export default function LoginScreen() {
+  const [linkOpen, setLinkOpen] = useState(false);
   const { colors } = useApp();
   const [step, setStep] = useState('form');
   const [name, setName] = useState('');
@@ -55,6 +58,7 @@ export default function LoginScreen() {
             <Input placeholder={t('email')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
             <Muted style={{ fontSize: 13 }}>{t('loginInfo')}</Muted>
             <Button title={t('receiveCode')} onPress={sendCode} loading={loading} />
+            <Button title={'📱 ' + L('Se connecter avec le téléphone (QR code)', 'Log in with your phone (QR code)')} variant="ghost" onPress={() => setLinkOpen(true)} />
           </View>
         ) : (
           <View style={{ gap: 12 }}>
@@ -92,6 +96,7 @@ export default function LoginScreen() {
           ))}
         </View>
       </ScrollView>
+      <LinkWithPhone visible={linkOpen} onClose={() => setLinkOpen(false)} />
     </KeyboardAvoidingView>
   );
 }

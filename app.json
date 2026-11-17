@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ange chat +",
     "slug": "unichat-plus",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -22,7 +22,7 @@
     },
     "android": {
       "package": "com.unichatplus.app",
-      "versionCode": 23,
+      "versionCode": 24,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0E7C66"
@@ -63,6 +63,12 @@
         {
           "photosPermission": "Ange chat + a besoin d'accéder à vos photos pour les partager.",
           "cameraPermission": "Ange chat + a besoin de la caméra pour prendre des photos."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Ange chat + utilise la caméra pour scanner les codes QR."
         }
       ],
       [

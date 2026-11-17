@@ -46,6 +46,8 @@ import AdPrefsScreen from './src/screens/AdPrefsScreen';
 import BusinessPlansScreen from './src/screens/BusinessPlansScreen';
 import OwnerDashboardScreen from './src/screens/OwnerDashboardScreen';
 import HubScreen from './src/screens/HubScreen';
+import LinkedDevicesScreen from './src/screens/LinkedDevicesScreen';
+import MyQrScreen from './src/screens/MyQrScreen';
 import { navigationRef } from './src/lib/nav';
 import { L } from './src/lib/i18n';
 
@@ -77,7 +79,7 @@ function Tabs() {
 
 const linking = {
   prefixes: ['unichatplus://'],
-  config: { screens: { JoinGroup: 'join/:code', Event: 'event/:code' } },
+  config: { screens: { JoinGroup: 'join/:code', Event: 'event/:code', LinkedDevices: 'link' } },
 };
 
 function Root() {
@@ -125,6 +127,8 @@ function Root() {
             <Stack.Screen name="AdEdit" component={AdEditScreen} options={{ title: L('Publicité', 'Ad') }} />
             <Stack.Screen name="AdPrefs" component={AdPrefsScreen} options={{ title: L('Préférences publicitaires', 'Ad preferences') }} />
             <Stack.Screen name="BusinessPlans" component={BusinessPlansScreen} options={{ title: L('Offres Pro', 'Pro plans') }} />
+            <Stack.Screen name="LinkedDevices" component={LinkedDevicesScreen} options={{ title: L('Appareils connectés', 'Linked devices') }} />
+            <Stack.Screen name="MyQr" component={MyQrScreen} options={{ title: L('Code QR', 'QR code') }} />
             <Stack.Screen name="Hub" component={HubScreen} options={{ title: L('Centre Ange chat +', 'Ange chat + hub') }} />
             <Stack.Screen name="OwnerDashboard" component={OwnerDashboardScreen} options={{ title: L('Tableau de bord', 'Dashboard') }} />
           </>

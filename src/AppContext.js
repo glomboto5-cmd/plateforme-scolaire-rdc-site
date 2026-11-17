@@ -121,6 +121,21 @@ export function AppProvider({ children }) {
         }
       }
       if (!stored) {
+        // Appareil lié (connexion par QR depuis le téléphone principal) : ne déconnecte pas le téléphone
+        const linkRaw = await AsyncStorage.getItem('unichat.linkRequest');
+        if (linkRaw) {
+          await AsyncStorage.removeItem('unichat.linkRequest');
+          try {
+            const lr = JSON.parse(linkRaw);
+            const { data: lid } = await supabase.rpc('register_linked_device', { p_request: lr.id, p_secret: lr.secret });
+            if (lid) {
+              stored = lid;
+              await AsyncStorage.setItem(DEVICE_KEY, lid);
+            }
+          } catch (e) {}
+        }
+      }
+      if (!stored) {
         const { data: id, error } = await supabase.rpc('activate_device', {
           p_platform: platformName,
           p_device_name: Device.name(),
